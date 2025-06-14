@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشاركة - منصة التمويل الجماعي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #F8F9FA 0%, #E8F5E8 100%);
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 414px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%);
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+        
+        .screen {
+            display: none;
+            padding: 25px;
+            min-height: 100vh;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 60%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            80% { transform: translateY(-5px); }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #00796B 0%, #004D40 100%);
+            color: white;
+            padding: 30px 25px;
+            text-align: center;
+            border-radius: 0 0 25px 25px;
+            margin: -25px -25px 25px -25px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo i {
+            margin-left: 10px;
+            animation: bounce 2s infinite;
+        }
+        
+        .tagline {
+            font-size: 15px;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,121,107,0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+        
+        .card:hover::before {
+            left: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,121,107,0.15);
+        }
+        
+        .project-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #FFA000 0%, #FF8F00 100%);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
+        }
+        
+        .project-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.9);
+            color: #00796B;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+        
+        .project-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #00796B;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .project-title i {
+            color: #FFA000;
+            font-size: 18px;
+        }
+        
+        .project-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        
+        .progress-container {
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            background: #E8F5E8;
+            height: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #00796B 0%, #26A69A 100%);
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .progress-text {
+            font-size: 12px;
+            color: #00796B;
+            font-weight: 600;
+        }
+        
+        .project-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 15px 10px;
+            background: linear-gradient(135deg, #F8F9FA 0%, #E8F5E8 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(0,121,107,0.1);
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            color: #00796B;
+            font-size: 16px;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #00796B 0%, #004D40 100%);
+            color: white;
+            border: none;
+            padding: 16px 25px;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,121,107,0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #FFA000 0%, #FF8F00 100%);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 10px 25px rgba(255,160,0,0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #00796B;
+            color: #00796B;
+        }
+        
+        .btn-outline:hover {
+            background: #00796B;
+            color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #E8F5E8;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #FAFAFA;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #00796B;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0,121,107,0.1);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00796B;
+            margin-top: 12px;
+        }
+        
+        .form-input.with-icon {
+            padding-left: 50px;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 414px;
+            max-width: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0,121,107,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0 20px 0;
+            border-radius: 25px 25px 0 0;
+        }
+        
+        .nav-item {
+            text-align: center;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            border-radius: 15px;
+            position: relative;
+        }
+        
+        .nav-item.active {
+            color: #00796B;
+            background: rgba(0,121,107,0.1);
+        }
+        
+        .nav-item:hover {
+            transform: translateY(-2px);
+        }
+        
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item.active .nav-icon {
+            animation: bounce 0.6s ease;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #00796B 0%, #004D40 100%);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+        }
+        
+        .stat-card.secondary {
+            background: linear-gradient(135deg, #FFA000 0%, #FF8F00 100%);
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stat-card .stat-label {
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .investment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #E8F5E8;
+            transition: all 0.3s ease;
+        }
+        
+        .investment-item:last-child {
+            border-bottom: none;
+        }
+        
+        .investment-item:hover {
+            background: rgba(0,121,107,0.02);
+            margin: 0 -25px;
+            padding: 20px 25px;
+            border-radius: 12px;
+        }
+        
+        .investment-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .investment-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #FFA000 0%, #FF8F00 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .investment-details h4 {
+            color: #00796B;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .investment-amount {
+            font-weight: 700;
+            color: #333;
+            font-size: 16px;
+            text-align: right;
+        }
+        
+        .investment-profit {
+            color: #4CAF50;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
+            padding: 35px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            position: relative;
+            animation: slideUp 0.4s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        
+        .modal-icon {
+            font-size: 70px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease;
+        }
+        
+        .welcome-screen {
+            text-align: center;
+            padding: 60px 25px;
+        }
+        
+        .welcome-icon {
+            font-size: 100px;
+            color: #00796B;
+            margin-bottom: 25px;
+            animation: bounce 2s infinite;
+        }
+        
+        .welcome-title {
+            font-size: 28px;
+            color: #00796B;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .welcome-subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .amount-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .amount-btn {
+            padding: 15px 12px;
+            border: 2px solid #E8F5E8;
+            background: #FAFAFA;
+            color: #00796B;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .amount-btn:hover {
+            border-color: #00796B;
+            background: rgba(0,121,107,0.05);
+        }
+        
+        .amount-btn.selected {
+            background: linear-gradient(135deg, #00796B 0%, #004D40 100%);
+            color: white;
+            border-color: #00796B;
+            transform: scale(1.02);
+        }
+        
+        .return-info {
+            margin: 25px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #E8F5E8 0%, #F8F9FA 100%);
+            border-radius: 15px;
+            border: 1px solid rgba(0,121,107,0.1);
+        }
+        
+        .return-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .return-item:last-child {
+            margin-bottom: 0;
+            font-weight: 600;
+            padding-top: 8px;
+            border-top: 1px solid rgba(0,121,107,0.1);
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #E8F5E8;
+        }
+        
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #00796B 0%, #004D40 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .feature-text {
+            flex: 1;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        
+        .feature-description {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #FF5722;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        .floating-action {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #FFA000 0%, #FF8F00 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 8px 25px rgba(255,160,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .floating-action:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(255,160,0,0.4);
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .bottom-nav {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div class="screen active" id="welcome">
+            <div class="welcome-screen">
+                <div class="welcome-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h1 class="welcome-title">مرحباً بك في مشاركة</h1>
+                <p class="welcome-subtitle">منصة التمويل الجماعي الرائدة للمشاريع الصغيرة والمتوسطة في الوطن العربي</p>
+                
+                <div class="card">
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="feature-text">
+                                <div class="feature-title">آمن ومضمون</div>
+                                <div class="feature-description">عقود إلكترونية موثقة وشفافية كاملة</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="feature-text">
+                                <div class="feature-title">عوائد مجزية</div>
+                                <div class="feature-description">استثمارات مدروسة بعوائد تنافسية</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="feature-text">
+                                <div class="feature-title">مجتمع المستثمرين</div>
+                                <div class="feature-description">انضم لآلاف المستثمرين الناجحين</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <button class="btn" onclick="showScreen('register')">
+                    <i class="fas fa-rocket"></i>
+                    ابدأ الاستثمار الآن
+                </button>
+                <button class="btn btn-outline" onclick="showScreen('home')" style="margin-top: 15px;">
+                    <i class="fas fa-eye"></i>
+                    تصفح المشاريع أولاً
+                </button>
+            </div>
+        </div>
+
+        <!-- Registration Screen -->
+        <div class="screen" id="register">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-user-plus"></i>
+                    إنشاء حساب جديد
+                </div>
+                <div class="tagline">انضم لمجتمع المستثمرين الناجحين</div>
+            </div>
+            
+            <form onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-user"></i>
+                        الاسم الكامل
+                    </label>
+                    <input type="text" class="form-input with-icon" placeholder="أدخل اسمك الكامل" required>
+                    <i class="fas fa-user input-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-phone"></i>
+                        رقم الهاتف
+                    </label>
+                    <input type="tel" class="form-input with-icon" placeholder="01xxxxxxxxx" required>
+                    <i class="fas fa-phone input-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        البريد الإلكتروني
+                    </label>
+                    <input type="email" class="form-input with-icon" placeholder="example@email.com" required>
+                    <i class="fas fa-envelope input-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i>
+                        كلمة المرور
+                    </label>
+                    <input type="password" class="form-input with-icon" placeholder="كلمة مرور قوية" required>
+                    <i class="fas fa-lock input-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-id-card"></i>
+                        الرقم القومي
+                    </label>
+                    <input type="text" class="form-input with-icon" placeholder="رقمك القومي للتوثيق" required>
+                    <i class="fas fa-id-card input-icon"></i>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-check-circle"></i>
+                    إنشاء الحساب
+                </button>
+                <button type="button" class="btn btn-outline" onclick="showScreen('home')" style="margin-top: 15px;">
+                    <i class="fas fa-sign-in-alt"></i>
+                    لديك حساب بالفعل؟
+                </button>
+            </form>
+        </div>
+
+        <!-- Home Screen -->
+        <div class="screen" id="home">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-handshake"></i>
+                    مشاركة
+                </div>
+                <div class="tagline">استثمر في المشاريع الواعدة واحصل على عوائد مجزية</div>
+            </div>
+            
+            <div class="project-card card">
+                <div class="project-image" style="background: linear-gradient(135deg, #FF6B35 0%, #FF8E53 100%);">
+                    <i class="fas fa-pizza-slice"></i>
+                    <div class="project-badge">
+                        <i class="fas fa-fire"></i>
+                        الأكثر طلباً
+                    </div>
+                </div>
+                <div class="project-title">
+                    <i class="fas fa-store"></i>
+                    مطعم البيتزا الذهبية
+                </div>
+                <div class="project-description">مطعم متخصص في البيتزا الإيطالية الأصلية بوصفات عائلية مميزة في موقع استراتيجي بوسط المدينة مع خدمة التوصيل السريع</div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                    <div class="progress-text">تم تمويل 75% من المشروع</div>
+                </div>
+                
+                <div class="project-stats">
+                    <div class="stat">
+                        <div class="stat-value">
+                            <i class="fas fa-percentage"></i>
+                            75%
+                        </div>
+                        <div class="stat-label">مُمول</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">
+                            <i class="fas fa-chart-line"></i>
+                            18%
+                        </div>
+                        <div class="stat-label">عائد متوقع</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">
+                            <i class="fas fa-calendar-alt"></i>
+                            12
+                        </div>
+                        <div class="stat-label">شهر</div>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="showInvestmentModal('مطعم البيتزا الذهبية', 18, 12)">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    شارك الآن
+                </button>
+            </div>
+            
+            <div class="project-card card">
+                <div class="project-image" style="background: linear-gradient(135deg, #E91E63 0%, #F06292 100%);">
+                    <i class="fas fa-mobile-alt"></i>
+                    <div class="project-badge">
+                        <i class="fas fa-star"></i>
+                        جديد
+                    </div>
+                </div>
+                <div class="project-title">
+                    <i class="fas fa-store"></i>
+                    متجر التقنية الحديثة
+                </div>
+                <div class="project-description">متجر متخصص في بيع وصيانة الهواتف الذكية والإكسسوارات مع خدمة توصيل مجانية وضمان شامل على جميع المنتجات</div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%"></div>
+                    </div>
+                    <div class="progress-text">تم تمويل 45% من المشروع</div>
+                </div>
+                
+                <div class="project-stats">
+                    <div class="stat">
+                        <div class="stat-value">
+                            <i class="fas fa-percentage"></i>
+                            45%
+                        </div>
+                        <div class="stat-label">مُمول</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">
+                            <i class="fas fa-chart-line"></i>
+                            22%
+                        </div>
+                        <div class="stat-label">عائد متوقع</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">
+                            <i class="fas fa-calendar-alt"></i>
+                            8
+                        </div>
+                        <div class="stat-label">شهر</div>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="showInvestmentModal('متجر التقنية الحديثة', 22, 8)">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    شارك الآن
+                </button>
+            </div>
+            
+            <div class="project-card card">
+                <div class="project-image" style="background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%);">
+                    <i class="fas fa-coffee"></i>
+                    <div class="project-badge">
+                        <i class="fas fa-crown"></i>
+                        مميز
+                    </div>
+                </div>
+                <div class="project-title">
+                    <i class="fas fa-store"></i>
+                    مقهى الأصالة التراثي
+                </div>
+                <div class="project-description">مقهى تراثي يقدم القهوة العربية والشاي المميز مع الحلويات الشرقية في أجواء شعبية أصيلة مع إطلالة رائعة على النيل</div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 30%"></div>
+                    </div>
+                    <div class="progress-text">تم تمويل 30% من المشروع</div>
+                </div>
+                
+                <div class="project-stats">
+                    <div class="stat">
+                        <div class="stat-value">
+                            <i class="fas fa-percentage"></i>
+                            30%
+                        </div>
+                        <div class="stat-label">مُمول</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">
+                            <i class="fas fa-chart-line"></i>
+                            15%
+                        </div>
+                        <div class="stat-label">عائد متوقع</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">
+                            <i class="fas fa-calendar-alt"></i>
+                            10
+                        </div>
+                        <div class="stat-label">شهر</div>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="showInvestmentModal('مقهى الأصالة التراثي', 15, 10)">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    شارك الآن
+                </button>
+            </div>
+            
+            <div class="project-card card">
+                <div class="project-image" style="background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);">
+                    <i class="fas fa-seedling"></i>
+                    <div class="project-badge">
+                        <i class="fas fa-leaf"></i>
+                        صديق البيئة
+                    </div>
+                </div>
+                <div class="project-title">
+                    <i class="fas fa-store"></i>
+                    مزرعة الخضروات العضوية
+                </div>
+                <div class="project-description">مزرعة متخصصة في إنتاج الخضروات العضوية الطازجة بدون مبيدات ضارة مع خدمة التوصيل المباشر للمنازل والمطاعم</div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%"></div>
+                    </div>
+                    <div class="progress-text">تم تمويل 60% من المشروع</div>
+                </div>
+                
+                <div class="project-stats">
+                    <div class="stat">
+                        <div class="stat-value">
+                            <i class="fas fa-percentage"></i>
+                            60%
+                        </div>
+                        <div class="stat-label">مُمول</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">
+                            <i class="fas fa-chart-line"></i>
+                            20%
+                        </div>
+                        <div class="stat-label">عائد متوقع</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">
+                            <i class="fas fa-calendar-alt"></i>
+                            6
+                        </div>
+                        <div class="stat-label">شهر</div>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="showInvestmentModal('مزرعة الخضروات العضوية', 20, 6)">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    شارك الآن
+                </button>
+            </div>
+            
+            <div style="height: 100px;"></div>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div class="screen" id="dashboard">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-chart-bar"></i>
+                    لوحة التحكم
+                </div>
+                <div class="tagline">تابع استثماراتك وأرباحك بشكل مباشر</div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-wallet" style="font-size: 24px; margin-bottom: 10px; opacity: 0.8;"></i>
+                    <div class="stat-number">15,000</div>
+                    <div class="stat-label">جنيه مستثمر</div>
+                </div>
+                <div class="stat-card secondary">
+                    <i class="fas fa-coins" style="font-size: 24px; margin-bottom: 10px; opacity: 0.8;"></i>
+                    <div class="stat-number">2,250</div>
+                    <div class="stat-label">جنيه أرباح</div>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="card" style="padding: 20px; text-align: center;">
+                    <i class="fas fa-trending-up" style="font-size: 30px; color: #4CAF50; margin-bottom: 10px;"></i>
+                    <div style="font-size: 18px; font-weight: 700; color: #4CAF50;">+15%</div>
+                    <div style="font-size: 12px; color: #666;">العائد الإجمالي</div>
+                </div>
+                <div class="card" style="padding: 20px; text-align: center;">
+                    <i class="fas fa-project-diagram" style="font-size: 30px; color: #00796B; margin-bottom: 10px;"></i>
+                    <div style="font-size: 18px; font-weight: 700; color: #00796B;">4</div>
+                    <div style="font-size: 12px; color: #666;">مشاريع نشطة</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-briefcase"></i>
+                    استثماراتي الحالية
+                </h3>
+                
+                <div class="investment-item">
+                    <div class="investment-info">
+                        <div class="investment-icon">
+                            <i class="fas fa-pizza-slice"></i>
+                        </div>
+                        <div class="investment-details">
+                            <h4>مطعم البيتزا الذهبية</h4>
+                            <div class="investment-profit">
+                                <i class="fas fa-arrow-up"></i>
+                                +1,200 جنيه أرباح
+                            </div>
+                        </div>
+                    </div>
+                    <div class="investment-amount">8,000 جنيه</div>
+                </div>
+                
+                <div class="investment-item">
+                    <div class="investment-info">
+                        <div class="investment-icon" style="background: linear-gradient(135deg, #E91E63 0%, #F06292 100%);">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="investment-details">
+                            <h4>متجر التقنية الحديثة</h4>
+                            <div class="investment-profit">
+                                <i class="fas fa-arrow-up"></i>
+                                +750 جنيه أرباح
+                            </div>
+                        </div>
+                    </div>
+                    <div class="investment-amount">5,000 جنيه</div>
+                </div>
+                
+                <div class="investment-item">
+                    <div class="investment-info">
+                        <div class="investment-icon" style="background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%);">
+                            <i class="fas fa-coffee"></i>
+                        </div>
+                        <div class="investment-details">
+                            <h4>مقهى الأصالة التراثي</h4>
+                            <div class="investment-profit">
+                                <i class="fas fa-arrow-up"></i>
+                                +300 جنيه أرباح
+                            </div>
+                        </div>
+                    </div>
+                    <div class="investment-amount">2,000 جنيه</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-cog"></i>
+                    العمليات السريعة
+                </h3>
+                <button class="btn" style="margin-bottom: 10px;">
+                    <i class="fas fa-money-bill-wave"></i>
+                    سحب الأرباح
+                </button>
+                <button class="btn btn-secondary" style="margin-bottom: 10px;">
+                    <i class="fas fa-redo-alt"></i>
+                    إعادة استثمار
+                </button>
+                <button class="btn btn-outline">
+                    <i class="fas fa-file-download"></i>
+                    تحميل التقرير الشهري
+                </button>
+            </div>
+            
+            <div style="height: 100px;"></div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div class="screen" id="profile">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-user-circle"></i>
+                    الملف الشخصي
+                </div>
+                <div class="tagline">إدارة حسابك ومعلوماتك الشخصية</div>
+            </div>
+            
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #00796B 0%, #004D40 100%); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 30px;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 style="color: #00796B; margin-bottom: 5px;">أحمد محمد علي</h3>
+                    <p style="color: #666; font-size: 14px;">مستثمر منذ 6 أشهر</p>
+                </div>
+                
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">تعديل المعلومات الشخصية</div>
+                            <div class="feature-description">تحديث البيانات والمعلومات</div>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">إعدادات الإشعارات</div>
+                            <div class="feature-description">التحكم في الإشعارات والتنبيهات</div>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">الأمان والخصوصية</div>
+                            <div class="feature-description">إدارة كلمة المرور والأمان</div>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">الدعم الفني</div>
+                            <div class="feature-description">تواصل مع فريق الدعم</div>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">حول التطبيق</div>
+                            <div class="feature-description">معلومات عن مشاركة والشروط</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <button class="btn" style="background: #f44336;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    تسجيل الخروج
+                </button>
+            </div>
+            
+            <div style="height: 100px;"></div>
+        </div>
+
+        <!-- Notifications Screen -->
+        <div class="screen" id="notifications">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-bell"></i>
+                    الإشعارات
+                </div>
+                <div class="tagline">تابع آخر التحديثات والأخبار المهمة</div>
+            </div>
+            
+            <div class="card">
+                <div class="investment-item" style="border-bottom: 1px solid #E8F5E8; padding: 20px 0;">
+                    <div class="investment-info">
+                        <div class="investment-icon" style="background: #4CAF50;">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="investment-details">
+                            <h4>تم توزيع أرباح شهرية</h4>
+                            <div style="color: #666; font-size: 13px;">تم إضافة 450 جنيه لحسابك من مطعم البيتزا</div>
+                            <div style="color: #999; font-size: 12px; margin-top: 5px;">منذ ساعتين</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="investment-item" style="border-bottom: 1px solid #E8F5E8; padding: 20px 0;">
+                    <div class="investment-info">
+                        <div class="investment-icon" style="background: #FFA000;">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="investment-details">
+                            <h4>مشروع جديد متاح للاستثمار</h4>
+                            <div style="color: #666; font-size: 13px;">مطعم للوجبات السريعة بعائد 25%</div>
+                            <div style="color: #999; font-size: 12px; margin-top: 5px;">منذ 3 ساعات</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="investment-item" style="border-bottom: 1px solid #E8F5E8; padding: 20px 0;">
+                    <div class="investment-info">
+                        <div class="investment-icon" style="background: #00796B;">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="investment-details">
+                            <h4>تحديث أداء المشروع</h4>
+                            <div style="color: #666; font-size: 13px;">متجر التقنية يحقق أرباحاً أعلى من المتوقع</div>
+                            <div style="color: #999; font-size: 12px; margin-top: 5px;">أمس</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="investment-item" style="padding: 20px 0;">
+                    <div class="investment-info">
+                        <div class="investment-icon" style="background: #E91E63;">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div class="investment-details">
+                            <h4>عرض خاص للمستثمرين المميزين</h4>
+                            <div style="color: #666; font-size: 13px;">خصم 5% على رسوم الاستثمار للشهر القادم</div>
+                            <div style="color: #999; font-size: 12px; margin-top: 5px;">منذ يومين</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="height: 100px;"></div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="showScreen('home')">
+                <div class="nav-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div>الرئيسية</div>
+            </div>
+            <div class="nav-item" onclick="showScreen('dashboard')">
+                <div class="nav-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div>المحفظة</div>
+            </div>
+            <div class="nav-item" onclick="showScreen('notifications')">
+                <div class="nav-icon">
+                    <i class="fas fa-bell"></i>
+                    <div class="notification-badge">3</div>
+                </div>
+                <div>الإشعارات</div>
+            </div>
+            <div class="nav-item" onclick="showScreen('profile')">
+                <div class="nav-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>الحساب</div>
+            </div>
+        </div>
+
+        <!-- Floating Action Button -->
+        <div class="floating-action" onclick="showScreen('home')" title="البحث عن مشاريع">
+            <i class="fas fa-search"></i>
+        </div>
+
+        <!-- Investment Modal -->
+        <div class="modal" id="investmentModal">
+            <div class="modal-content">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;" id="modalProjectName">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    استثمار في المشروع
+                </h3>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-money-bill-wave"></i>
+                        مبلغ الاستثمار
+                    </label>
+                    <input type="number" class="form-input with-icon" id="investmentAmount" placeholder="أدخل المبلغ بالجنيه" min="500">
+                    <i class="fas fa-money-bill-wave input-icon"></i>
+                </div>
+                
+                <div class="amount-buttons">
+                    <button class="amount-btn" onclick="selectAmount(1000)">1,000 جنيه</button>
+                    <button class="amount-btn" onclick="selectAmount(2500)">2,500 جنيه</button>
+                    <button class="amount-btn" onclick="selectAmount(5000)">5,000 جنيه</button>
+                    <button class="amount-btn" onclick="selectAmount(10000)">10,000 جنيه</button>
+                </div>
+                
+                <div class="return-info">
+                    <div class="return-item">
+                        <span>مبلغ الاستثمار:</span>
+                        <span id="investmentDisplay">0 جنيه</span>
+                    </div>
+                    <div class="return-item">
+                        <span>العائد المتوقع:</span>
+                        <span style="color: #4CAF50;" id="expectedReturn">0 جنيه</span>
+                    </div>
+                    <div class="return-item">
+                        <span>مدة الاستثمار:</span>
+                        <span id="investmentPeriod">12 شهر</span>
+                    </div>
+                    <div class="return-item">
+                        <span><strong>إجمالي العائد:</strong></span>
+                        <span style="color: #00796B; font-weight: 700;" id="totalReturn">0 جنيه</span>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="confirmInvestment()">
+                    <i class="fas fa-check-circle"></i>
+                    تأكيد الاستثمار
+                </button>
+                <button class="btn btn-outline" onclick="closeModal()" style="margin-top: 10px;">
+                    <i class="fas fa-times"></i>
+                    إلغاء
+                </button>
+            </div>
+        </div>
+
+        <!-- Success Modal -->
+        <div class="modal" id="successModal">
+            <div class="modal-content">
+                <div class="modal-icon" style="color: #4CAF50;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 style="color: #4CAF50; margin-bottom: 15px;">تم الاستثمار بنجاح!</h3>
+                <p style="color: #666; margin-bottom: 20px; line-height: 1.6;">تم تسجيل استثمارك بنجاح وسيتم إرسال العقد الإلكتروني إلى بريدك الإلكتروني خلال 24 ساعة</p>
+                <button class="btn" onclick="closeModal(); showScreen('dashboard')">
+                    <i class="fas fa-chart-bar"></i>
+                    عرض المحفظة
+                </button>
+                <button class="btn btn-outline" onclick="closeModal(); showScreen('home')" style="margin-top: 10px;">
+                    <i class="fas fa-home"></i>
+                    العودة للرئيسية
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentProject = '';
+        let currentReturnRate = 0;
+        let currentPeriod = 0;
+        let userData = {
+            totalInvested: 15000,
+            totalProfits: 2250,
+            investments: []
+        };
+
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show selected screen
+            document.getElementById(screenId).classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            if (screenId === 'home') {
+                document.querySelector('.nav-item:nth-child(1)').classList.add('active');
+            } else if (screenId === 'dashboard') {
+                document.querySelector('.nav-item:nth-child(2)').classList.add('active');
+            } else if (screenId === 'notifications') {
+                document.querySelector('.nav-item:nth-child(3)').classList.add('active');
+            } else if (screenId === 'profile') {
+                document.querySelector('.nav-item:nth-child(4)').classList.add('active');
+            }
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            
+            // Simple validation
+            const inputs = event.target.querySelectorAll('input[required]');
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.style.borderColor = '#f44336';
+                } else {
+                    input.style.borderColor = '#E8F5E8';
+                }
+            });
+            
+            if (isValid) {
+                showScreen('home');
+                setTimeout(() => {
+                    alert('🎉 تم إنشاء الحساب بنجاح! مرحباً بك في مشاركة');
+                }, 500);
+            } else {
+                alert('⚠️ يرجى ملء جميع الحقول المطلوبة');
+            }
+        }
+
+        function showInvestmentModal(projectName, returnRate, period) {
+            currentProject = projectName;
+            currentReturnRate = returnRate / 100;
+            currentPeriod = period;
+            
+            document.getElementById('modalProjectName').innerHTML = `
+                <i class="fas fa-hand-holding-usd"></i>
+                استثمار في ${projectName}
+            `;
+            document.getElementById('investmentPeriod').textContent = `${period} شهر`;
+            document.getElementById('investmentModal').classList.add('active');
+            calculateReturn();
+        }
+
+        function selectAmount(amount) {
+            document.getElementById('investmentAmount').value = amount;
+            
+            // Update button selection
+            document.querySelectorAll('.amount-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            
+            calculateReturn();
+        }
+
+        function calculateReturn() {
+            const amount = parseFloat(document.getElementById('investmentAmount').value) || 0;
+            const returnAmount = Math.round(amount * currentReturnRate);
+            const totalReturn = amount + returnAmount;
+            
+            document.getElementById('investmentDisplay').textContent = `${amount.toLocaleString()} جنيه`;
+            document.getElementById('expectedReturn').textContent = `${returnAmount.toLocaleString()} جنيه`;
+            document.getElementById('totalReturn').textContent = `${totalReturn.toLocaleString()} جنيه`;
+        }
+
+        function confirmInvestment() {
+            const amount = parseFloat(document.getElementById('investmentAmount').value);
+            
+            if (!amount || amount < 500) {
+                alert('⚠️ الحد الأدنى للاستثمار هو 500 جنيه');
+                return;
+            }
+            
+            if (amount > 50000) {
+                alert('⚠️ الحد الأقصى للاستثمار هو 50,000 جنيه');
+                return;
+            }
+            
+            // Add investment to user data
+            userData.investments.push({
+                project: currentProject,
+                amount: amount,
+                returnRate: currentReturnRate,
+                period: currentPeriod,
+                date: new Date().toLocaleDateString('ar-EG')
+            });
+            
+            userData.totalInvested += amount;
+            
+            closeModal();
+            document.getElementById('successModal').classList.add('active');
+            
+            // Add some visual feedback
+            setTimeout(() => {
+                updateDashboardStats();
+            }, 1000);
+        }
+
+        function updateDashboardStats() {
+            // This would typically update the dashboard with new investment data
+            console.log('تم تحديث إحصائيات المحفظة');
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('active');
+            });
+            
+            // Reset form
+            document.getElementById('investmentAmount').value = '';
+            document.querySelectorAll('.amount-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Reset calculations
+            document.getElementById('investmentDisplay').textContent = '0 جنيه';
+            document.getElementById('expectedReturn').textContent = '0 جنيه';
+            document.getElementById('totalReturn').textContent = '0 جنيه';
+        }
+
+        // Update investment amount input
+        document.getElementById('investmentAmount').addEventListener('input', function() {
+            calculateReturn();
+            
+            // Remove any previous selection
+            document.querySelectorAll('.amount-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+        });
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        });
+
+        // Add some interactive animations
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Simulate real-time updates
+        function simulateRealTimeUpdates() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            
+            setInterval(() => {
+                progressBars.forEach(bar => {
+                    const currentWidth = parseInt(bar.style.width);
+                    if (currentWidth < 90 && Math.random() > 0.7) {
+                        bar.style.width = `${currentWidth + 1}%`;
+                        const progressText = bar.parentElement.nextElementSibling;
+                        if (progressText) {
+                            progressText.textContent = `تم تمويل ${currentWidth + 1}% من المشروع`;
+                        }
+                    }
+                });
+            }, 5000);
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start real-time updates simulation
+            simulateRealTimeUpdates();
+            
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Add loading states to buttons
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!this.classList.contains('loading')) {
+                        const originalText = this.innerHTML;
+                        this.classList.add('loading');
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحميل...';
+                        
+                        setTimeout(() => {
+                            this.classList.remove('loading');
+                            this.innerHTML = originalText;
+                        }, 1000);
+                    }
+                });
+            });
+
+            // Add notification sound effect (optional)
+            function playNotificationSound() {
+                // This would play a subtle notification sound
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjmR2+6');
+                // audio.play().catch(() => {}); // Ignore if audio doesn't work
+            }
+
+            // Show welcome message on first load
+            if (localStorage.getItem('firstVisit') !== 'false') {
+                setTimeout(() => {
+                    alert('🌟 مرحباً بك في مشاركة! ابدأ رحلتك الاستثمارية معنا');
+                    localStorage.setItem('firstVisit', 'false');
+                }, 2000);
+            }
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1':
+                        e.preventDefault();
+                        showScreen('home');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        showScreen('dashboard');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        showScreen('notifications');
+                        break;
+                    case '4':
+                        e.preventDefault();
+                        showScreen('profile');
+                        break;
+                }
+            }
+            
+            // ESC to close modals
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Add touch gestures for mobile
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchmove', function(e) {
+            if (!touchStartX || !touchStartY) {
+                return;
+            }
+
+            let touchEndX = e.touches[0].clientX;
+            let touchEndY = e.touches[0].clientY;
+
+            let diffX = touchStartX - touchEndX;
+            let diffY = touchStartY - touchEndY;
+
+            // Horizontal swipe
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                if (diffX > 0) {
+                    // Swipe left - next screen
+                } else {
+                    // Swipe right - previous screen
+                }
+            }
+
+            touchStartX = 0;
+            touchStartY = 0;
+        });
+
+        // Performance optimization - lazy loading
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Apply observer to cards
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
