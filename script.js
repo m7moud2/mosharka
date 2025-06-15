@@ -1605,13 +1605,243 @@ function loadInvestorDashboard() {
 function updateProfile() {
     if (!currentUser) return;
     
-    updateElementText('profileName', `${currentUser.firstName} ${currentUser.lastName}`);
+    const fullName = `${currentUser.firstName} ${currentUser.lastName}`;
+    const profileNameElement = document.getElementById('profileName');
+    
+    if (profileNameElement) {
+        if (currentUser.status === 'approved') {
+            profileNameElement.innerHTML = `
+                <div class="user-name-verified">
+                    <span>${fullName}</span>
+                    <div class="verification-badge">
+                        <i class="fas fa-check-circle verification-icon"></i>
+                        موثق
+                    </div>
+                </div>
+            `;
+        } else {
+            profileNameElement.textContent = fullName;
+        }
+    }
+    
     updateElementText('profileType', getUserTypeArabic(currentUser.type));
     
     const statusElement = document.getElementById('profileStatus');
     if (statusElement) {
-        statusElement.className = `project-status status-${currentUser.status}`;
-        statusElement.textContent = getStatusArabic(currentUser.status);
+        if (currentUser.status === 'approved') {
+            statusElement.className = 'profile-status-container';
+            statusElement.innerHTML = `
+                <div class="project-status status-approved">
+                    <i class="fas fa-check-circle"></i>
+                    حساب موثق
+                    <div class="verification-badge">
+                        <i class="fas fa-shield-alt verification-icon"></i>
+                        معتمد
+                    </div>
+                </div>
+            `;
+        } else {
+            statusElement.className = `project-status status-${currentUser.status}`;
+            statusElement.textContent = getStatusArabic(currentUser.status);
+        }
+    }
+}
+
+// Update header names with verification
+function loadInvestorHome() {
+    const investorNameElement = document.getElementById('investorName');
+    if (investorNameElement && currentUser) {
+        if (currentUser.status === 'approved') {
+            investorNameElement.innerHTML = `
+                <div class="user-name-verified">
+                    <span>${currentUser.firstName}</span>
+                    <div class="verification-badge">
+                        <i class="fas fa-check-circle verification-icon"></i>
+                        موثق
+                    </div>
+                </div>
+            `;
+        } else {
+            investorNameElement.textContent = currentUser.firstName;
+        }
+    }
+    
+    const projects = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROJECTS) || '[]');
+    const approvedProjects = projects.filter(p => p.status === 'approved');
+    
+    const container = document.getElementById('investorProjects');
+    if (!container) return;
+    
+    if (approvedProjects.length === 0) {
+        container.innerHTML = `
+            <div class="card">
+                <div style="text-align: center; padding: 40px;">
+                    <i class="fas fa-search" style="font-size: 60px; color: #00796B; margin-bottom: 15px;"></i>
+                    <h3 style="color: #00796B; margin-bottom: 10px;">لا توجد مشاريع متاحة</h3>
+                    <p style="color: #666;">لا توجد مشاريع متاحة للاستثمار حالياً</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = approvedProjects.map(project => createProjectCard(project, false)).join('');
+}
+
+function loadOwnerHome() {
+    const ownerNameElement = document.getElementById('ownerName');
+    if (ownerNameElement && currentUser) {
+        if (currentUser.status === 'approved') {
+            ownerNameElement.innerHTML = `
+                <div class="user-name-verified">
+                    <span>${currentUser.firstName}</span>
+                    <div class="verification-badge">
+                        <i class="fas fa-check-circle verification-icon"></i>
+                        موثق
+                    </div>
+                </div>
+            `;
+        } else {
+            ownerNameElement.textContent = currentUser.firstName;
+        }
+    }
+    
+    const projects = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROJECTS) || '[]');
+    const userProjects = projects.filter(p => p.ownerId === currentUser.id);
+    
+    const container = document.getElementById('ownerProjects');
+    if (!container) return;
+    
+    if (userProjects.length === 0) {
+        container.innerHTML = `
+            <div class="card">
+                <div style="text-align: center; padding: 40px;">
+                    <i class="fas fa-plus-circle" style="font-size: 60px; color: #00796B; margin-bottom: 15px;"></i>
+                    <h3 style="color: #00796B; margin-bottom: 10px;">لا توجد مشاريع</h3>
+                    <p style="color: #666; margin-bottom: 20px;">أضف مشروعك الأول وابدأ في جمع التمويل</p>
+                    <button type="button" class="btn" onclick="showScreen('addProject')">
+                        <i class="fas fa-plus"></i>
+                        إضافة مشروع جديد
+                    </button>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = userProjects.map(project => createProjectCard(project, true)).join('');
+}
+
+// Update pending users list with verification status
+function loadPendingUsers(users) {
+    const container = document.getElementById('pendingUsersList');
+    if (!container) return;
+    
+    if (users.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">لا توجد طلبات توثيق في الانتظار</p>';
+        return;
+    }
+    
+    container.innerHTML = users.map(user => `
+        <div class="pending-item">
+            <div class="pending-info">
+                <div class="pending-name-verified">
+                    <span class="pending-name">${user.firstName} ${user.lastName}</span>
+                    ${user.status === 'approved' ? 
+                        `<div class="verification-badge">
+                            <i class="fas fa-check-circle verification-icon"></i>
+                            موثق
+                        </div>` : ''
+                    }
+                </div>
+                <div class="pending-type">
+                    <i class="fas fa-${user.type === 'investor' ? 'chart-line' : 'briefcase'}"></i>
+                    ${user.type === 'investor' ? 'مستثمر' : 'صاحب مشروع'}
+                </div>
+            </div>
+            <div class="pending-actions">
+                <button type="button" class="btn btn-small" onclick="viewUserDetails('${user.id}')">
+                    <i class="fas fa-eye"></i>
+                    عرض
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Update notification display for approved users
+function approveUser() {
+    if (!selectedUserId) return;
+    
+    const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
+    const userIndex = users.findIndex(u => u.id === selectedUserId);
+    if (userIndex === -1) return;
+    
+    users[userIndex].status = 'approved';
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+    
+    // Add notification for user with verification badge
+    addNotification({
+        type: 'account_approved',
+        title: '🎉 تم توثيق حسابك بنجاح',
+        message: `تهانينا! تم الموافقة على طلب التوثيق الخاص بك. حسابك الآن موثق ✓ ويمكنك استخدام جميع المميزات`,
+        targetUser: selectedUserId
+    });
+    
+    closeModal();
+    loadAdminDashboard();
+    showSuccessModal('تم توثيق المستخدم بنجاح ✓', 'المستخدم حصل على علامة التوثيق الزرقاء');
+}
+
+// Update user details modal to show verification status
+function viewUserDetails(userId) {
+    const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
+    const user = users.find(u => u.id === userId);
+    if (!user) return;
+    
+    selectedUserId = userId;
+    
+    const verificationBadge = user.status === 'approved' ? 
+        `<div class="verification-badge" style="margin-right: 10px;">
+            <i class="fas fa-check-circle verification-icon"></i>
+            موثق
+        </div>` : '';
+    
+    const content = `
+        <div style="text-align: right;">
+            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                <strong>الاسم:</strong> 
+                <span style="margin-right: 10px;">${user.firstName} ${user.lastName}</span>
+                ${verificationBadge}
+            </div>
+            <p><strong>البريد الإلكتروني:</strong> ${user.email}</p>
+            <p><strong>رقم الهاتف:</strong> ${user.phone}</p>
+            <p><strong>الرقم القومي:</strong> ${user.nationalId}</p>
+            <p><strong>نوع الحساب:</strong> ${user.type === 'investor' ? 'مستثمر' : 'صاحب مشروع'}</p>
+            <p><strong>حالة التوثيق:</strong> 
+                <span class="project-status status-${user.status}" style="margin-right: 10px;">
+                    ${getStatusArabic(user.status)}
+                    ${user.status === 'approved' ? '<i class="fas fa-check-circle" style="margin-right: 5px;"></i>' : ''}
+                </span>
+            </p>
+            ${user.type === 'investor' ? 
+                `<p><strong>المستوى التعليمي:</strong> ${getEducationArabic(user.education)}</p>
+                 <p><strong>الدخل الشهري:</strong> ${getIncomeArabic(user.income)}</p>` :
+                `<p><strong>نوع النشاط:</strong> ${getProjectTypeArabic(user.businessType)}</p>
+                 <p><strong>المحافظة:</strong> ${getGovernorateArabic(user.governorate)}</p>`
+            }
+            <p><strong>تاريخ التسجيل:</strong> ${new Date(user.createdAt).toLocaleDateString('ar-EG')}</p>
+        </div>
+    `;
+    
+    const contentElement = document.getElementById('userDetailsContent');
+    if (contentElement) {
+        contentElement.innerHTML = content;
+    }
+    
+    const modal = document.getElementById('userDetailsModal');
+    if (modal) {
+        modal.classList.add('active');
     }
 }
 
@@ -2021,29 +2251,374 @@ function logout() {
 }
 
 function editProfile() {
-    showAlert('warning', 'ميزة تعديل الملف الشخصي ستكون متاحة قريباً');
+    showScreen('editProfile');
+    loadEditProfile();
+}
+
+function loadEditProfile() {
+    if (!currentUser) return;
+    
+    // Populate form with current user data
+    updateElementValue('editFirstName', currentUser.firstName);
+    updateElementValue('editLastName', currentUser.lastName);
+    updateElementValue('editEmail', currentUser.email);
+    updateElementValue('editPhone', currentUser.phone);
+    updateElementValue('editNationalId', currentUser.nationalId);
+    
+    if (currentUser.type === 'investor') {
+        updateElementValue('editEducation', currentUser.education || '');
+        updateElementValue('editIncome', currentUser.income || '');
+        document.getElementById('editInvestorFields').style.display = 'block';
+        document.getElementById('editOwnerFields').style.display = 'none';
+    } else if (currentUser.type === 'owner') {
+        updateElementValue('editBusinessType', currentUser.businessType || '');
+        updateElementValue('editGovernorate', currentUser.governorate || '');
+        document.getElementById('editInvestorFields').style.display = 'none';
+        document.getElementById('editOwnerFields').style.display = 'block';
+    }
+}
+
+function handleEditProfile(event) {
+    event.preventDefault();
+    
+    const updatedData = {
+        firstName: document.getElementById('editFirstName').value,
+        lastName: document.getElementById('editLastName').value,
+        email: document.getElementById('editEmail').value,
+        phone: document.getElementById('editPhone').value,
+        nationalId: document.getElementById('editNationalId').value
+    };
+    
+    // Add type-specific fields
+    if (currentUser.type === 'investor') {
+        updatedData.education = document.getElementById('editEducation').value;
+        updatedData.income = document.getElementById('editIncome').value;
+    } else if (currentUser.type === 'owner') {
+        updatedData.businessType = document.getElementById('editBusinessType').value;
+        updatedData.governorate = document.getElementById('editGovernorate').value;
+    }
+    
+    // Update user data
+    const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
+    const userIndex = users.findIndex(u => u.id === currentUser.id);
+    
+    if (userIndex !== -1) {
+        users[userIndex] = { ...users[userIndex], ...updatedData };
+        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+        
+        // Update current user
+        currentUser = { ...currentUser, ...updatedData };
+        localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+        
+        updateProfile();
+        showAlert('success', 'تم تحديث المعلومات الشخصية بنجاح', 'editProfile');
+        
+        setTimeout(() => {
+            showScreen('profile');
+        }, 2000);
+    }
 }
 
 function showPaymentMethods() {
-    showAlert('warning', 'ميزة إدارة طرق الدفع ستكون متاحة قريباً');
+    showScreen('paymentMethods');
+    loadPaymentMethods();
+}
+
+function loadPaymentMethods() {
+    const savedMethods = JSON.parse(localStorage.getItem(`payment_methods_${currentUser.id}`) || '[]');
+    const container = document.getElementById('savedPaymentMethods');
+    
+    if (!container) return;
+    
+    if (savedMethods.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <i class="fas fa-credit-card" style="font-size: 60px; color: #00796B; margin-bottom: 15px;"></i>
+                <h3 style="color: #00796B; margin-bottom: 10px;">لا توجد طرق دفع محفوظة</h3>
+                <p style="color: #666;">أضف طريقة دفع جديدة لسهولة الاستخدام</p>
+            </div>
+        `;
+    } else {
+        container.innerHTML = savedMethods.map(method => `
+            <div class="payment-method-card">
+                <div class="payment-method-info">
+                    <div class="payment-icon" style="background: ${getPaymentMethodColor(method.type)};">
+                        <i class="fas fa-${getPaymentMethodIcon(method.type)}"></i>
+                    </div>
+                    <div class="payment-details">
+                        <h4>${getPaymentMethodArabic(method.type)}</h4>
+                        <p>${method.displayName}</p>
+                        <span class="payment-date">أضيف في ${new Date(method.createdAt).toLocaleDateString('ar-EG')}</span>
+                    </div>
+                </div>
+                <button class="btn btn-danger btn-small" onclick="removePaymentMethod('${method.id}')">
+                    <i class="fas fa-trash"></i>
+                    حذف
+                </button>
+            </div>
+        `).join('');
+    }
+}
+
+function addPaymentMethod() {
+    showModal('addPaymentMethodModal');
+}
+
+function handleAddPaymentMethod(event) {
+    event.preventDefault();
+    
+    const type = document.getElementById('newPaymentType').value;
+    const accountInfo = document.getElementById('newPaymentAccount').value;
+    const holderName = document.getElementById('newPaymentHolder').value;
+    
+    if (!type || !accountInfo || !holderName) {
+        showAlert('error', 'يرجى إكمال جميع البيانات', 'addPaymentMethod');
+        return;
+    }
+    
+    const newMethod = {
+        id: generateId(),
+        type: type,
+        accountInfo: accountInfo,
+        holderName: holderName,
+        displayName: maskAccountInfo(accountInfo, type),
+        createdAt: new Date().toISOString()
+    };
+    
+    const savedMethods = JSON.parse(localStorage.getItem(`payment_methods_${currentUser.id}`) || '[]');
+    savedMethods.push(newMethod);
+    localStorage.setItem(`payment_methods_${currentUser.id}`, JSON.stringify(savedMethods));
+    
+    closeModal();
+    loadPaymentMethods();
+    showAlert('success', 'تم إضافة طريقة الدفع بنجاح');
+    
+    event.target.reset();
+}
+
+function removePaymentMethod(methodId) {
+    if (!confirm('هل أنت متأكد من حذف طريقة الدفع هذه؟')) return;
+    
+    const savedMethods = JSON.parse(localStorage.getItem(`payment_methods_${currentUser.id}`) || '[]');
+    const filteredMethods = savedMethods.filter(m => m.id !== methodId);
+    localStorage.setItem(`payment_methods_${currentUser.id}`, JSON.stringify(filteredMethods));
+    
+    loadPaymentMethods();
+    showAlert('success', 'تم حذف طريقة الدفع بنجاح');
 }
 
 function notificationSettings() {
-    showAlert('warning', 'ميزة إعدادات الإشعارات ستكون متاحة قريباً');
+    showScreen('notificationSettings');
+    loadNotificationSettings();
+}
+
+function loadNotificationSettings() {
+    const settings = JSON.parse(localStorage.getItem(`notification_settings_${currentUser.id}`) || '{}');
+    
+    // Set default values if not exists
+    const defaultSettings = {
+        emailNotifications: true,
+        smsNotifications: true,
+        investmentUpdates: true,
+        projectUpdates: true,
+        paymentNotifications: true,
+        marketingEmails: false,
+        weeklyReports: true,
+        securityAlerts: true
+    };
+    
+    const userSettings = { ...defaultSettings, ...settings };
+    
+    // Update toggle switches
+    updateToggle('emailNotifications', userSettings.emailNotifications);
+    updateToggle('smsNotifications', userSettings.smsNotifications);
+    updateToggle('investmentUpdates', userSettings.investmentUpdates);
+    updateToggle('projectUpdates', userSettings.projectUpdates);
+    updateToggle('paymentNotifications', userSettings.paymentNotifications);
+    updateToggle('marketingEmails', userSettings.marketingEmails);
+    updateToggle('weeklyReports', userSettings.weeklyReports);
+    updateToggle('securityAlerts', userSettings.securityAlerts);
+}
+
+function toggleNotificationSetting(settingName) {
+    const settings = JSON.parse(localStorage.getItem(`notification_settings_${currentUser.id}`) || '{}');
+    settings[settingName] = !settings[settingName];
+    localStorage.setItem(`notification_settings_${currentUser.id}`, JSON.stringify(settings));
+    
+    updateToggle(settingName, settings[settingName]);
+    showAlert('success', 'تم تحديث إعدادات الإشعارات');
 }
 
 function securitySettings() {
-    showAlert('warning', 'ميزة إعدادات الأمان ستكون متاحة قريباً');
+    showScreen('securitySettings');
+    loadSecuritySettings();
+}
+
+function loadSecuritySettings() {
+    // Load security settings and activity
+    const lastLogin = localStorage.getItem(`last_login_${currentUser.id}`) || new Date().toISOString();
+    updateElementText('lastLoginTime', getTimeAgo(lastLogin));
+    
+    const loginAttempts = JSON.parse(localStorage.getItem(`login_attempts_${currentUser.id}`) || '[]');
+    updateElementText('recentAttempts', loginAttempts.length);
+}
+
+function handleChangePassword(event) {
+    event.preventDefault();
+    
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    if (currentPassword !== currentUser.password) {
+        showAlert('error', 'كلمة المرور الحالية غير صحيحة', 'security');
+        return;
+    }
+    
+    if (newPassword.length < 6) {
+        showAlert('error', 'كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل', 'security');
+        return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+        showAlert('error', 'كلمة المرور الجديدة وتأكيدها غير متطابقتين', 'security');
+        return;
+    }
+    
+    // Update password
+    const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
+    const userIndex = users.findIndex(u => u.id === currentUser.id);
+    
+    if (userIndex !== -1) {
+        users[userIndex].password = newPassword;
+        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+        
+        currentUser.password = newPassword;
+        localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+        
+        // Add security notification
+        addNotification({
+            type: 'security_update',
+            title: 'تم تغيير كلمة المرور',
+            message: 'تم تغيير كلمة المرور الخاصة بك بنجاح',
+            targetUser: currentUser.id
+        });
+        
+        showAlert('success', 'تم تغيير كلمة المرور بنجاح', 'security');
+        event.target.reset();
+    }
+}
+
+function enable2FA() {
+    showAlert('warning', 'ميزة المصادقة الثنائية ستكون متاحة قريباً');
+}
+
+function viewLoginHistory() {
+    showAlert('warning', 'ميزة سجل تسجيل الدخول ستكون متاحة قريباً');
 }
 
 function contactSupport() {
-    showAlert('success', 'للدعم الفني، يرجى التواصل على: support@musharaka.com أو الواتساب: 01234567890');
+    showScreen('contactSupport');
+}
+
+function handleSupportMessage(event) {
+    event.preventDefault();
+    
+    const subject = document.getElementById('supportSubject').value;
+    const message = document.getElementById('supportMessage').value;
+    const priority = document.getElementById('supportPriority').value;
+    
+    const supportTicket = {
+        id: generateId(),
+        userId: currentUser.id,
+        userName: `${currentUser.firstName} ${currentUser.lastName}`,
+        userEmail: currentUser.email,
+        subject: subject,
+        message: message,
+        priority: priority,
+        status: 'open',
+        createdAt: new Date().toISOString()
+    };
+    
+    // Save support ticket
+    const tickets = JSON.parse(localStorage.getItem('support_tickets') || '[]');
+    tickets.unshift(supportTicket);
+    localStorage.setItem('support_tickets', JSON.stringify(tickets));
+    
+    // Add notification
+    addNotification({
+        type: 'support_ticket',
+        title: 'تم إرسال رسالة الدعم',
+        message: `تم إرسال رسالتك بعنوان "${subject}" وسيتم الرد عليك خلال 24 ساعة`,
+        targetUser: currentUser.id
+    });
+    
+    showAlert('success', 'تم إرسال رسالتك بنجاح! سيتم الرد عليك خلال 24 ساعة', 'support');
+    event.target.reset();
 }
 
 function aboutApp() {
-    showAlert('success', 'مشاركة - منصة التمويل الجماعي الرائدة في الوطن العربي v1.0.0');
+    showScreen('aboutApp');
 }
 
 function downloadInvestmentReport() {
     showAlert('warning', 'ميزة تحميل تقرير الاستثمارات ستكون متاحة قريباً');
+}
+
+// Helper Functions
+function updateElementValue(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.value = value || '';
+    }
+}
+
+function updateToggle(settingName, isActive) {
+    const toggle = document.getElementById(settingName + 'Toggle');
+    if (toggle) {
+        if (isActive) {
+            toggle.classList.add('active');
+        } else {
+            toggle.classList.remove('active');
+        }
+    }
+}
+
+function showModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('active');
+    }
+}
+
+function maskAccountInfo(accountInfo, type) {
+    if (type === 'bank') {
+        return accountInfo.length > 4 ? 
+               '**** **** **** ' + accountInfo.slice(-4) : 
+               accountInfo;
+    } else {
+        return accountInfo.length > 4 ? 
+               '****' + accountInfo.slice(-4) : 
+               accountInfo;
+    }
+}
+
+function getPaymentMethodColor(type) {
+    const colors = {
+        bank: '#2E7D32',
+        vodafone: '#E60000',
+        fawry: '#00796B',
+        visa: '#1A1F71'
+    };
+    return colors[type] || '#00796B';
+}
+
+function getPaymentMethodIcon(type) {
+    const icons = {
+        bank: 'university',
+        vodafone: 'mobile-alt',
+        fawry: 'money-check-alt',
+        visa: 'credit-card'
+    };
+    return icons[type] || 'credit-card';
 }
