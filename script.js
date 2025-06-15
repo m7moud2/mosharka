@@ -4,6 +4,8 @@ let currentProject = null;
 let selectedUserType = '';
 let selectedUserId = null;
 let selectedProjectId = null;
+let selectedPaymentMethod = '';
+let selectedWithdrawMethod = '';
 
 // Local Storage Keys
 const STORAGE_KEYS = {
@@ -11,7 +13,30 @@ const STORAGE_KEYS = {
     PROJECTS: 'musharaka_projects',
     INVESTMENTS: 'musharaka_investments',
     NOTIFICATIONS: 'musharaka_notifications',
-    CURRENT_USER: 'musharaka_current_user'
+    CURRENT_USER: 'musharaka_current_user',
+    TRANSACTIONS: 'musharaka_transactions',
+    WALLETS: 'musharaka_wallets'
+};
+
+// Platform Settings
+const PLATFORM_SETTINGS = {
+    MIN_INVESTMENT: 500,
+    MAX_INVESTMENT: 100000,
+    MIN_DEPOSIT: 50,
+    MAX_DEPOSIT: 50000,
+    MIN_WITHDRAWAL: 100,
+    PLATFORM_FEE: 0.03, // 3%
+    WITHDRAWAL_FEE: 0.02, // 2%
+    PAYMENT_FEES: {
+        fawry: 5,
+        vodafone: 0.01, // 1%
+        visa: 0.025 // 2.5%
+    },
+    WITHDRAWAL_FEES: {
+        bank: 10,
+        vodafone: 0.015, // 1.5%
+        fawry: 8
+    }
 };
 
 // Initialize App
@@ -50,6 +75,14 @@ function initializeApp() {
     if (!localStorage.getItem(STORAGE_KEYS.NOTIFICATIONS)) {
         localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify([]));
     }
+
+    if (!localStorage.getItem(STORAGE_KEYS.TRANSACTIONS)) {
+        localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify([]));
+    }
+
+    if (!localStorage.getItem(STORAGE_KEYS.WALLETS)) {
+        localStorage.setItem(STORAGE_KEYS.WALLETS, JSON.stringify([]));
+    }
 }
 
 function setupEventListeners() {
@@ -68,9 +101,36 @@ function setupEventListeners() {
         });
     }
 
+    // Deposit amount input listener
+    const depositInput = document.getElementById('depositAmount');
+    if (depositInput) {
+        depositInput.addEventListener('input', function() {
+            updateDepositSummary();
+            // Remove previous button selections
+            document.querySelectorAll('.amount-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+        });
+    }
+
+    // Withdraw amount input listener
+    const withdrawInput = document.getElementById('withdrawAmount');
+    if (withdrawInput) {
+        withdrawInput.addEventListener('input', function() {
+            updateWithdrawSummary();
+        });
+    }
+
     // Modal close on outside click
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('modal')) {
+            closeModal();
+        }
+    });
+
+    // ESC key to close modals
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
             closeModal();
         }
     });
@@ -90,9 +150,11 @@ function checkAuthentication() {
                 if (currentUser.type === 'investor') {
                     showScreen('investorHome');
                     loadInvestorHome();
+                    loadWalletBalance();
                 } else if (currentUser.type === 'owner') {
                     showScreen('ownerHome');
                     loadOwnerHome();
+                    loadEarningsBalance();
                 }
                 showBottomNav();
             } else {
@@ -130,6 +192,14 @@ function showScreen(screenId) {
         // Load data for specific screens
         if (screenId === 'notifications' && currentUser) {
             loadNotifications();
+        } else if (screenId === 'depositMoney' && currentUser) {
+            loadWalletBalance();
+            updateCurrentBalance();
+        } else if (screenId === 'withdrawMoney' && currentUser) {
+            loadEarningsBalance();
+            updateAvailableEarnings();
+        } else if (screenId === 'walletHistory' && currentUser) {
+            loadWalletHistory();
         }
         
         // Update navigation
@@ -201,6 +271,510 @@ function navigateToDashboard() {
     } else if (currentUser.type === 'owner') {
         showScreen('ownerHome');
         loadOwnerHome();
+    }
+}
+
+// Wallet Management Functions
+function getWalletBalance(userId) {
+    const wallets = JSON.parse(localStorage.getItem(STORAGE_KEYS.WALLETS) || '[]');
+    const wallet = wallets.find(w => w.userId === userId);
+    return wallet ? wallet.balance : 0;
+}
+
+function updateWalletBalance(userId, amount, type = 'add') {
+    const wallets = JSON.parse(localStorage.getItem(STORAGE_KEYS.WALLETS) || '[]');
+    let walletIndex = wallets.findIndex(w => w.userId === userId);
+    
+    if (walletIndex === -1) {
+        // Create new wallet
+        wallets.push({
+            id: generateId(),
+            userId: userId,
+            balance: type === 'add' ? amount : 0,
+            earnings: 0,
+            createdAt: new Date().toISOString()
+        });
+    } else {
+        // Update existing wallet
+        if (type === 'add') {
+            wallets[walletIndex].balance += amount;
+        } else if (type === 'subtract') {
+            wallets[walletIndex].balance = Math.max(0, wallets[walletIndex].balance - amount);
+        } else if (type === 'set') {
+            wallets[walletIndex].balance = amount;
+        }
+    }
+    
+    localStorage.setItem(STORAGE_KEYS.WALLETS, JSON.stringify(wallets));
+    return true;
+}
+
+function getEarningsBalance(userId) {
+    const wallets = JSON.parse(localStorage.getItem(STORAGE_KEYS.WALLETS) || '[]');
+    const wallet = wallets.find(w => w.userId === userId);
+    return wallet ? (wallet.earnings || 0) : 0;
+}
+
+function updateEarningsBalance(userId, amount, type = 'add') {
+    const wallets = JSON.parse(localStorage.getItem(STORAGE_KEYS.WALLETS) || '[]');
+    let walletIndex = wallets.findIndex(w => w.userId === userId);
+    
+    if (walletIndex === -1) {
+        // Create new wallet
+        wallets.push({
+            id: generateId(),
+            userId: userId,
+            balance: 0,
+            earnings: type === 'add' ? amount : 0,
+            createdAt: new Date().toISOString()
+        });
+    } else {
+        // Update existing earnings
+        if (type === 'add') {
+            wallets[walletIndex].earnings = (wallets[walletIndex].earnings || 0) + amount;
+        } else if (type === 'subtract') {
+            wallets[walletIndex].earnings = Math.max(0, (wallets[walletIndex].earnings || 0) - amount);
+        } else if (type === 'set') {
+            wallets[walletIndex].earnings = amount;
+        }
+    }
+    
+    localStorage.setItem(STORAGE_KEYS.WALLETS, JSON.stringify(wallets));
+    return true;
+}
+
+function loadWalletBalance() {
+    if (!currentUser) return;
+    
+    const balance = getWalletBalance(currentUser.id);
+    updateElementText('investorWalletBalance', `${balance.toLocaleString()} جنيه`);
+    updateElementText('modalWalletBalance', `${balance.toLocaleString()} جنيه`);
+}
+
+function loadEarningsBalance() {
+    if (!currentUser) return;
+    
+    const earnings = getEarningsBalance(currentUser.id);
+    updateElementText('ownerEarningsBalance', `${earnings.toLocaleString()} جنيه`);
+}
+
+function updateCurrentBalance() {
+    if (!currentUser) return;
+    
+    const balance = getWalletBalance(currentUser.id);
+    updateElementText('currentWalletBalance', `${balance.toLocaleString()} جنيه`);
+}
+
+function updateAvailableEarnings() {
+    if (!currentUser) return;
+    
+    const earnings = getEarningsBalance(currentUser.id);
+    updateElementText('availableEarnings', `${earnings.toLocaleString()} جنيه`);
+}
+
+// Transaction Management
+function addTransaction(transaction) {
+    const transactions = JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSACTIONS) || '[]');
+    transaction.id = generateId();
+    transaction.createdAt = new Date().toISOString();
+    transaction.status = transaction.status || 'completed';
+    transactions.unshift(transaction);
+    localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(transactions));
+}
+
+// Payment Methods
+function selectPaymentMethod(method) {
+    selectedPaymentMethod = method;
+    
+    // Update UI
+    document.querySelectorAll('.payment-method').forEach(el => {
+        el.classList.remove('selected');
+    });
+    
+    const selectedElement = document.getElementById(method + 'Method');
+    if (selectedElement) {
+        selectedElement.classList.add('selected');
+    }
+    
+    updateDepositSummary();
+}
+
+function selectWithdrawMethod(method) {
+    selectedWithdrawMethod = method;
+    
+    // Update UI
+    document.querySelectorAll('.payment-method').forEach(el => {
+        el.classList.remove('selected');
+    });
+    
+    const selectedElement = document.getElementById(method + (method === 'bank' ? 'Method' : 'WithdrawMethod'));
+    if (selectedElement) {
+        selectedElement.classList.add('selected');
+    }
+    
+    // Show/hide relevant forms
+    const bankDetails = document.getElementById('bankDetails');
+    const mobileWalletDetails = document.getElementById('mobileWalletDetails');
+    
+    if (method === 'bank') {
+        if (bankDetails) bankDetails.style.display = 'block';
+        if (mobileWalletDetails) mobileWalletDetails.style.display = 'none';
+    } else {
+        if (bankDetails) bankDetails.style.display = 'none';
+        if (mobileWalletDetails) mobileWalletDetails.style.display = 'block';
+    }
+    
+    updateWithdrawSummary();
+}
+
+function selectDepositAmount(amount) {
+    const input = document.getElementById('depositAmount');
+    if (input) {
+        input.value = amount;
+    }
+    
+    // Update button selection
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    event.target.classList.add('selected');
+    
+    updateDepositSummary();
+}
+
+function updateDepositSummary() {
+    const amountInput = document.getElementById('depositAmount');
+    const amount = amountInput ? parseFloat(amountInput.value) || 0 : 0;
+    
+    if (amount < PLATFORM_SETTINGS.MIN_DEPOSIT || !selectedPaymentMethod) {
+        const summary = document.getElementById('depositSummary');
+        if (summary) summary.style.display = 'none';
+        return;
+    }
+    
+    let fees = 0;
+    if (selectedPaymentMethod === 'fawry') {
+        fees = PLATFORM_SETTINGS.PAYMENT_FEES.fawry;
+    } else if (selectedPaymentMethod === 'vodafone') {
+        fees = Math.round(amount * PLATFORM_SETTINGS.PAYMENT_FEES.vodafone);
+    } else if (selectedPaymentMethod === 'visa') {
+        fees = Math.round(amount * PLATFORM_SETTINGS.PAYMENT_FEES.visa);
+    }
+    
+    const total = amount + fees;
+    
+    updateElementText('depositAmountDisplay', `${amount.toLocaleString()} جنيه`);
+    updateElementText('depositFeesDisplay', `${fees.toLocaleString()} جنيه`);
+    updateElementText('totalDepositDisplay', `${total.toLocaleString()} جنيه`);
+    
+    const summary = document.getElementById('depositSummary');
+    if (summary) summary.style.display = 'block';
+}
+
+function updateWithdrawSummary() {
+    const amountInput = document.getElementById('withdrawAmount');
+    const amount = amountInput ? parseFloat(amountInput.value) || 0 : 0;
+    
+    if (amount < PLATFORM_SETTINGS.MIN_WITHDRAWAL || !selectedWithdrawMethod) {
+        const summary = document.getElementById('withdrawSummary');
+        if (summary) summary.style.display = 'none';
+        return;
+    }
+    
+    let withdrawFees = 0;
+    if (selectedWithdrawMethod === 'bank') {
+        withdrawFees = PLATFORM_SETTINGS.WITHDRAWAL_FEES.bank;
+    } else if (selectedWithdrawMethod === 'vodafone') {
+        withdrawFees = Math.round(amount * PLATFORM_SETTINGS.WITHDRAWAL_FEES.vodafone);
+    } else if (selectedWithdrawMethod === 'fawry') {
+        withdrawFees = PLATFORM_SETTINGS.WITHDRAWAL_FEES.fawry;
+    }
+    
+    const platformFees = Math.round(amount * PLATFORM_SETTINGS.WITHDRAWAL_FEE);
+    const totalFees = withdrawFees + platformFees;
+    const netAmount = amount - totalFees;
+    
+    updateElementText('withdrawAmountDisplay', `${amount.toLocaleString()} جنيه`);
+    updateElementText('withdrawFeesDisplay', `${withdrawFees.toLocaleString()} جنيه`);
+    updateElementText('platformFeesDisplay', `${platformFees.toLocaleString()} جنيه`);
+    updateElementText('netWithdrawDisplay', `${Math.max(0, netAmount).toLocaleString()} جنيه`);
+    
+    const summary = document.getElementById('withdrawSummary');
+    if (summary) summary.style.display = 'block';
+}
+
+// Deposit Handler
+function handleDeposit(event) {
+    event.preventDefault();
+    
+    const amount = parseFloat(document.getElementById('depositAmount').value);
+    
+    if (!amount || amount < PLATFORM_SETTINGS.MIN_DEPOSIT) {
+        showAlert('error', `الحد الأدنى للشحن هو ${PLATFORM_SETTINGS.MIN_DEPOSIT} جنيه`, 'deposit');
+        return;
+    }
+    
+    if (amount > PLATFORM_SETTINGS.MAX_DEPOSIT) {
+        showAlert('error', `الحد الأقصى للشحن هو ${PLATFORM_SETTINGS.MAX_DEPOSIT.toLocaleString()} جنيه`, 'deposit');
+        return;
+    }
+    
+    if (!selectedPaymentMethod) {
+        showAlert('error', 'يرجى اختيار طريقة الدفع', 'deposit');
+        return;
+    }
+    
+    // Show payment processing modal
+    showPaymentProcessingModal();
+    
+    // Simulate payment processing
+    setTimeout(() => {
+        // Add amount to wallet
+        updateWalletBalance(currentUser.id, amount);
+        
+        // Add transaction record
+        addTransaction({
+            userId: currentUser.id,
+            type: 'deposit',
+            amount: amount,
+            paymentMethod: selectedPaymentMethod,
+            description: `شحن المحفظة عبر ${getPaymentMethodArabic(selectedPaymentMethod)}`
+        });
+        
+        // Add notification
+        addNotification({
+            type: 'deposit_completed',
+            title: 'تم شحن المحفظة',
+            message: `تم شحن محفظتك بمبلغ ${amount.toLocaleString()} جنيه بنجاح`,
+            targetUser: currentUser.id
+        });
+        
+        closeModal();
+        showSuccessModal('تم شحن المحفظة بنجاح!', `تم إضافة ${amount.toLocaleString()} جنيه إلى محفظتك`);
+        
+        // Update balance display
+        loadWalletBalance();
+        
+        // Reset form
+        event.target.reset();
+        selectedPaymentMethod = '';
+        document.querySelectorAll('.payment-method').forEach(el => {
+            el.classList.remove('selected');
+        });
+        document.getElementById('depositSummary').style.display = 'none';
+        
+        setTimeout(() => {
+            goToInvestorHome();
+        }, 2000);
+    }, 3000);
+}
+
+// Withdraw Handler
+function handleWithdraw(event) {
+    event.preventDefault();
+    
+    const amount = parseFloat(document.getElementById('withdrawAmount').value);
+    const availableEarnings = getEarningsBalance(currentUser.id);
+    
+    if (!amount || amount < PLATFORM_SETTINGS.MIN_WITHDRAWAL) {
+        showAlert('error', `الحد الأدنى للسحب هو ${PLATFORM_SETTINGS.MIN_WITHDRAWAL} جنيه`, 'withdraw');
+        return;
+    }
+    
+    if (amount > availableEarnings) {
+        showAlert('error', 'المبلغ المطلوب أكبر من الرصيد المتاح', 'withdraw');
+        return;
+    }
+    
+    if (!selectedWithdrawMethod) {
+        showAlert('error', 'يرجى اختيار طريقة السحب', 'withdraw');
+        return;
+    }
+    
+    // Validate required fields based on withdraw method
+    if (selectedWithdrawMethod === 'bank') {
+        const bankName = document.getElementById('bankName').value;
+        const accountNumber = document.getElementById('accountNumber').value;
+        const accountHolderName = document.getElementById('accountHolderName').value;
+        
+        if (!bankName || !accountNumber || !accountHolderName) {
+            showAlert('error', 'يرجى إكمال جميع بيانات الحساب البنكي', 'withdraw');
+            return;
+        }
+    } else {
+        const walletPhone = document.getElementById('walletPhoneNumber').value;
+        const walletHolder = document.getElementById('walletHolderName').value;
+        
+        if (!walletPhone || !walletHolder) {
+            showAlert('error', 'يرجى إكمال جميع بيانات المحفظة', 'withdraw');
+            return;
+        }
+    }
+    
+    // Calculate fees
+    let withdrawFees = 0;
+    if (selectedWithdrawMethod === 'bank') {
+        withdrawFees = PLATFORM_SETTINGS.WITHDRAWAL_FEES.bank;
+    } else if (selectedWithdrawMethod === 'vodafone') {
+        withdrawFees = Math.round(amount * PLATFORM_SETTINGS.WITHDRAWAL_FEES.vodafone);
+    } else if (selectedWithdrawMethod === 'fawry') {
+        withdrawFees = PLATFORM_SETTINGS.WITHDRAWAL_FEES.fawry;
+    }
+    
+    const platformFees = Math.round(amount * PLATFORM_SETTINGS.WITHDRAWAL_FEE);
+    const totalFees = withdrawFees + platformFees;
+    const netAmount = amount - totalFees;
+    
+    if (netAmount <= 0) {
+        showAlert('error', 'المبلغ المطلوب أقل من الرسوم المطلوبة', 'withdraw');
+        return;
+    }
+    
+    // Deduct amount from earnings
+    updateEarningsBalance(currentUser.id, amount, 'subtract');
+    
+    // Add transaction record
+    addTransaction({
+        userId: currentUser.id,
+        type: 'withdrawal',
+        amount: amount,
+        netAmount: netAmount,
+        fees: totalFees,
+        withdrawMethod: selectedWithdrawMethod,
+        description: `سحب الأرباح عبر ${getWithdrawMethodArabic(selectedWithdrawMethod)}`,
+        status: 'processing'
+    });
+    
+    // Add notification
+    addNotification({
+        type: 'withdrawal_requested',
+        title: 'طلب سحب قيد المعالجة',
+        message: `تم إرسال طلب سحب بمبلغ ${netAmount.toLocaleString()} جنيه وسيتم التحويل خلال 24-48 ساعة`,
+        targetUser: currentUser.id
+    });
+    
+    showSuccessModal('تم إرسال طلب السحب!', `سيتم تحويل ${netAmount.toLocaleString()} جنيه إلى حسابك خلال 24-48 ساعة`);
+    
+    // Update balance display
+    loadEarningsBalance();
+    
+    // Reset form
+    event.target.reset();
+    selectedWithdrawMethod = '';
+    document.querySelectorAll('.payment-method').forEach(el => {
+        el.classList.remove('selected');
+    });
+    document.getElementById('withdrawSummary').style.display = 'none';
+    document.getElementById('bankDetails').style.display = 'none';
+    document.getElementById('mobileWalletDetails').style.display = 'none';
+    
+    setTimeout(() => {
+        goToOwnerHome();
+    }, 2000);
+}
+
+function goToInvestorHome() {
+    showScreen('investorHome');
+    loadInvestorHome();
+}
+
+// Wallet History
+function loadWalletHistory() {
+    if (!currentUser) return;
+    
+    const transactions = JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSACTIONS) || '[]');
+    const userTransactions = transactions.filter(t => t.userId === currentUser.id);
+    
+    const container = document.getElementById('transactionsList');
+    if (!container) return;
+    
+    if (userTransactions.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">لا توجد معاملات</p>';
+        return;
+    }
+    
+    container.innerHTML = userTransactions.map(transaction => `
+        <div class="transaction-item">
+            <div class="transaction-info">
+                <div class="transaction-icon ${transaction.type}">
+                    <i class="fas fa-${getTransactionIcon(transaction.type)}"></i>
+                </div>
+                <div class="transaction-details">
+                    <h4>${transaction.description}</h4>
+                    <div class="transaction-date">${getTimeAgo(transaction.createdAt)}</div>
+                </div>
+            </div>
+            <div class="transaction-amount">
+                <div class="amount ${transaction.type === 'deposit' || transaction.type === 'profit' ? 'positive' : 'negative'}">
+                    ${transaction.type === 'deposit' || transaction.type === 'profit' ? '+' : '-'}${transaction.amount.toLocaleString()} جنيه
+                </div>
+                <div class="transaction-status status-${transaction.status}">
+                    ${getTransactionStatusArabic(transaction.status)}
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function filterTransactions(type) {
+    // Update filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    const transactions = JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSACTIONS) || '[]');
+    let userTransactions = transactions.filter(t => t.userId === currentUser.id);
+    
+    if (type !== 'all') {
+        userTransactions = userTransactions.filter(t => t.type === type);
+    }
+    
+    const container = document.getElementById('transactionsList');
+    if (!container) return;
+    
+    if (userTransactions.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">لا توجد معاملات من هذا النوع</p>';
+        return;
+    }
+    
+    container.innerHTML = userTransactions.map(transaction => `
+        <div class="transaction-item">
+            <div class="transaction-info">
+                <div class="transaction-icon ${transaction.type}">
+                    <i class="fas fa-${getTransactionIcon(transaction.type)}"></i>
+                </div>
+                <div class="transaction-details">
+                    <h4>${transaction.description}</h4>
+                    <div class="transaction-date">${getTimeAgo(transaction.createdAt)}</div>
+                </div>
+            </div>
+            <div class="transaction-amount">
+                <div class="amount ${transaction.type === 'deposit' || transaction.type === 'profit' ? 'positive' : 'negative'}">
+                    ${transaction.type === 'deposit' || transaction.type === 'profit' ? '+' : '-'}${transaction.amount.toLocaleString()} جنيه
+                </div>
+                <div class="transaction-status status-${transaction.status}">
+                    ${getTransactionStatusArabic(transaction.status)}
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function showWalletHistory() {
+    showScreen('walletHistory');
+    loadWalletHistory();
+}
+
+function showEarningsHistory() {
+    showAlert('warning', 'ميزة تاريخ الأرباح ستكون متاحة قريباً');
+}
+
+function goBackFromHistory() {
+    if (currentUser.type === 'investor') {
+        goToInvestorHome();
+    } else if (currentUser.type === 'owner') {
+        goToOwnerHome();
     }
 }
 
@@ -277,6 +851,9 @@ function handleRegister(event) {
     users.push(formData);
     localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
 
+    // Create initial wallet
+    updateWalletBalance(formData.id, 0, 'set');
+
     // Add notification for admin
     addNotification({
         type: 'new_user',
@@ -333,9 +910,11 @@ function handleLogin(event) {
         if (user.type === 'investor') {
             showScreen('investorHome');
             loadInvestorHome();
+            loadWalletBalance();
         } else if (user.type === 'owner') {
             showScreen('ownerHome');
             loadOwnerHome();
+            loadEarningsBalance();
         }
         showBottomNav();
     }
@@ -352,6 +931,8 @@ function handleLogin(event) {
 function loadAdminDashboard() {
     const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
     const projects = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROJECTS) || '[]');
+    const investments = JSON.parse(localStorage.getItem(STORAGE_KEYS.INVESTMENTS) || '[]');
+    const transactions = JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSACTIONS) || '[]');
     
     const pendingUsers = users.filter(u => u.status === 'pending');
     const pendingProjects = projects.filter(p => p.status === 'pending');
@@ -359,11 +940,23 @@ function loadAdminDashboard() {
     const rejectedCount = users.filter(u => u.status === 'rejected').length + 
                         projects.filter(p => p.status === 'rejected').length;
     
+    // Calculate financial stats
+    const totalInvestments = investments.reduce((sum, inv) => sum + inv.amount, 0);
+    const platformCommissions = Math.round(totalInvestments * PLATFORM_SETTINGS.PLATFORM_FEE);
+    const activeProjects = projects.filter(p => p.status === 'approved').length;
+    const totalWithdrawals = transactions
+        .filter(t => t.type === 'withdrawal' && t.status === 'completed')
+        .reduce((sum, t) => sum + t.amount, 0);
+    
     // Update stats
     updateElementText('pendingUsersCount', pendingUsers.length);
     updateElementText('pendingProjectsCount', pendingProjects.length);
     updateElementText('approvedUsersCount', approvedUsers.length);
     updateElementText('rejectedCount', rejectedCount);
+    updateElementText('totalInvestmentsValue', totalInvestments.toLocaleString());
+    updateElementText('platformCommissions', platformCommissions.toLocaleString());
+    updateElementText('activeProjectsCount', activeProjects);
+    updateElementText('totalWithdrawals', totalWithdrawals.toLocaleString());
     
     loadPendingUsers(pendingUsers);
     loadPendingProjects(pendingProjects);
@@ -819,6 +1412,9 @@ function showInvestmentModal(projectName, returnRate, period, projectId) {
         periodDisplay.textContent = `${period} شهر`;
     }
     
+    // Update wallet balance in modal
+    loadWalletBalance();
+    
     const modal = document.getElementById('investmentModal');
     if (modal) {
         modal.classList.add('active');
@@ -858,16 +1454,25 @@ function calculateReturn() {
 function confirmInvestment() {
     const amountInput = document.getElementById('investmentAmount');
     const amount = amountInput ? parseFloat(amountInput.value) : 0;
+    const currentBalance = getWalletBalance(currentUser.id);
     
-    if (!amount || amount < 500) {
-        showAlert('error', 'الحد الأدنى للاستثمار هو 500 جنيه');
+    if (!amount || amount < PLATFORM_SETTINGS.MIN_INVESTMENT) {
+        showAlert('error', `الحد الأدنى للاستثمار هو ${PLATFORM_SETTINGS.MIN_INVESTMENT.toLocaleString()} جنيه`);
         return;
     }
     
-    if (amount > 50000) {
-        showAlert('error', 'الحد الأقصى للاستثمار هو 50,000 جنيه');
+    if (amount > PLATFORM_SETTINGS.MAX_INVESTMENT) {
+        showAlert('error', `الحد الأقصى للاستثمار هو ${PLATFORM_SETTINGS.MAX_INVESTMENT.toLocaleString()} جنيه`);
         return;
     }
+    
+    if (amount > currentBalance) {
+        showAlert('error', 'رصيد المحفظة غير كافي. يرجى شحن المحفظة أولاً');
+        return;
+    }
+    
+    // Deduct amount from wallet
+    updateWalletBalance(currentUser.id, amount, 'subtract');
     
     // Create investment record
     const investment = {
@@ -888,12 +1493,29 @@ function confirmInvestment() {
     investments.push(investment);
     localStorage.setItem(STORAGE_KEYS.INVESTMENTS, JSON.stringify(investments));
     
+    // Add transaction record
+    addTransaction({
+        userId: currentUser.id,
+        type: 'investment',
+        amount: amount,
+        projectId: currentProject.id,
+        description: `استثمار في مشروع ${currentProject.name}`
+    });
+    
     // Update project funding
     const projects = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROJECTS) || '[]');
     const projectIndex = projects.findIndex(p => p.id === currentProject.id);
     if (projectIndex !== -1) {
         projects[projectIndex].currentAmount = (projects[projectIndex].currentAmount || 0) + amount;
         localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
+        
+        // Calculate platform commission and owner earnings
+        const platformCommission = Math.round(amount * PLATFORM_SETTINGS.PLATFORM_FEE);
+        const ownerEarnings = amount - platformCommission;
+        
+        // Add earnings to project owner
+        const project = projects[projectIndex];
+        updateEarningsBalance(project.ownerId, ownerEarnings);
         
         // Add notifications
         addNotification({
@@ -904,12 +1526,20 @@ function confirmInvestment() {
         });
         
         // Notify project owner
-        const project = projects[projectIndex];
         addNotification({
             type: 'new_investment',
             title: 'استثمار جديد',
             message: `تم استثمار ${amount.toLocaleString()} جنيه في مشروعك ${project.name}`,
             targetUser: project.ownerId
+        });
+        
+        // Add earnings transaction for owner
+        addTransaction({
+            userId: project.ownerId,
+            type: 'profit',
+            amount: ownerEarnings,
+            projectId: currentProject.id,
+            description: `أرباح من استثمار في مشروع ${project.name}`
         });
     }
     
@@ -920,6 +1550,7 @@ function confirmInvestment() {
     if (currentUser.type === 'investor') {
         loadInvestorHome();
         loadInvestorDashboard();
+        loadWalletBalance();
     }
 }
 
@@ -959,6 +1590,9 @@ function loadInvestorDashboard() {
                     <div class="investment-profit">
                         <i class="fas fa-arrow-up"></i>
                         +${investment.expectedReturn.toLocaleString()} جنيه عائد متوقع
+                    </div>
+                    <div style="font-size: 11px; color: #666; margin-top: 3px;">
+                        ${getTimeAgo(investment.investmentDate)}
                     </div>
                 </div>
             </div>
@@ -1010,25 +1644,28 @@ function loadNotifications() {
     }
     
     container.innerHTML = userNotifications.map(notification => `
-        <div class="investment-item" style="border-bottom: 1px solid #E8F5E8; padding: 20px 0;">
-            <div class="investment-info">
-                <div class="investment-icon" style="background: ${getNotificationColor(notification.type)};">
-                    <i class="fas fa-${getNotificationIcon(notification.type)}"></i>
-                </div>
-                <div class="investment-details">
-                    <h4>${notification.title}</h4>
-                    <div style="color: #666; font-size: 13px;">${notification.message}</div>
-                    <div style="color: #999; font-size: 12px; margin-top: 5px;">
-                        ${getTimeAgo(notification.createdAt)}
-                    </div>
-                </div>
+        <div class="notification-item ${!notification.read ? 'unread' : ''}" onclick="markNotificationAsRead('${notification.id}')">
+            <div class="notification-header">
+                <div class="notification-title">${notification.title}</div>
+                <div class="notification-time">${getTimeAgo(notification.createdAt)}</div>
             </div>
+            <div class="notification-message">${notification.message}</div>
         </div>
     `).join('');
     
-    // Mark notifications as read
+    // Mark notifications as read after viewing
     const notificationIds = userNotifications.map(n => n.id);
-    markNotificationsAsRead(notificationIds);
+    setTimeout(() => markNotificationsAsRead(notificationIds), 1000);
+}
+
+function markNotificationAsRead(notificationId) {
+    const notifications = JSON.parse(localStorage.getItem(STORAGE_KEYS.NOTIFICATIONS) || '[]');
+    const notificationIndex = notifications.findIndex(n => n.id === notificationId);
+    if (notificationIndex !== -1) {
+        notifications[notificationIndex].read = true;
+        localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(notifications));
+        updateNotificationBadge();
+    }
 }
 
 function markNotificationsAsRead(notificationIds) {
@@ -1061,6 +1698,30 @@ function updateNotificationBadge() {
         } else {
             badge.classList.remove('visible');
         }
+    }
+}
+
+// Admin Functions
+function showAdminSettings() {
+    showAlert('warning', 'ميزة إدارة الرسوم والعمولات ستكون متاحة قريباً');
+}
+
+function showTransactionsHistory() {
+    showAlert('warning', 'ميزة سجل المعاملات المالية ستكون متاحة قريباً');
+}
+
+function generatePlatformReport() {
+    showAlert('warning', 'ميزة تقرير المنصة الشامل ستكون متاحة قريباً');
+}
+
+// Payment Processing Modal
+function showPaymentProcessingModal() {
+    updateElementText('paymentTitle', 'جاري معالجة الدفع');
+    updateElementText('paymentMessage', 'يرجى انتظار تأكيد العملية...');
+    
+    const modal = document.getElementById('paymentModal');
+    if (modal) {
+        modal.classList.add('active');
     }
 }
 
@@ -1172,6 +1833,44 @@ function getStatusArabic(status) {
     return statuses[status] || 'غير محدد';
 }
 
+function getPaymentMethodArabic(method) {
+    const methods = {
+        fawry: 'فوري',
+        vodafone: 'فودافون كاش',
+        visa: 'فيزا/ماستركارد'
+    };
+    return methods[method] || 'غير محدد';
+}
+
+function getWithdrawMethodArabic(method) {
+    const methods = {
+        bank: 'حساب بنكي',
+        vodafone: 'فودافون كاش',
+        fawry: 'فوري'
+    };
+    return methods[method] || 'غير محدد';
+}
+
+function getTransactionIcon(type) {
+    const icons = {
+        deposit: 'plus-circle',
+        investment: 'hand-holding-usd',
+        profit: 'chart-line',
+        withdrawal: 'minus-circle'
+    };
+    return icons[type] || 'exchange-alt';
+}
+
+function getTransactionStatusArabic(status) {
+    const statuses = {
+        completed: 'مكتملة',
+        processing: 'قيد المعالجة',
+        failed: 'فاشلة',
+        pending: 'في الانتظار'
+    };
+    return statuses[status] || 'غير محدد';
+}
+
 function getNotificationIcon(type) {
     const icons = {
         new_user: 'user-plus',
@@ -1182,7 +1881,9 @@ function getNotificationIcon(type) {
         project_rejected: 'times',
         investment_confirmed: 'hand-holding-usd',
         new_investment: 'coins',
-        profit_distributed: 'money-bill-wave'
+        profit_distributed: 'money-bill-wave',
+        deposit_completed: 'credit-card',
+        withdrawal_requested: 'money-bill-wave'
     };
     return icons[type] || 'bell';
 }
@@ -1197,7 +1898,9 @@ function getNotificationColor(type) {
         project_rejected: '#f44336',
         investment_confirmed: '#2196F3',
         new_investment: '#FF9800',
-        profit_distributed: '#4CAF50'
+        profit_distributed: '#4CAF50',
+        deposit_completed: '#4CAF50',
+        withdrawal_requested: '#FF9800'
     };
     return colors[type] || '#00796B';
 }
@@ -1242,6 +1945,8 @@ function closeModal() {
     selectedUserId = null;
     selectedProjectId = null;
     currentProject = null;
+    selectedPaymentMethod = '';
+    selectedWithdrawMethod = '';
 }
 
 function showSuccessModal(title, message = '') {
@@ -1258,11 +1963,14 @@ function showAlert(type, message, targetScreen = null) {
     const alertTypes = {
         success: 'alert-success',
         error: 'alert-error',
-        warning: 'alert-warning'
+        warning: 'alert-warning',
+        info: 'alert-info'
     };
     
     const alertClass = alertTypes[type] || 'alert-error';
-    const alertIcon = type === 'success' ? 'check-circle' : (type === 'warning' ? 'exclamation-triangle' : 'times-circle');
+    const alertIcon = type === 'success' ? 'check-circle' : 
+                     (type === 'warning' ? 'exclamation-triangle' : 
+                     (type === 'info' ? 'info-circle' : 'times-circle'));
     
     const alertHtml = `
         <div class="alert ${alertClass}">
@@ -1304,6 +2012,9 @@ function showAlert(type, message, targetScreen = null) {
 function logout() {
     localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
     currentUser = null;
+    selectedUserType = '';
+    selectedPaymentMethod = '';
+    selectedWithdrawMethod = '';
     hideBottomNav();
     showScreen('welcome');
     showAlert('success', 'تم تسجيل الخروج بنجاح');
@@ -1311,6 +2022,10 @@ function logout() {
 
 function editProfile() {
     showAlert('warning', 'ميزة تعديل الملف الشخصي ستكون متاحة قريباً');
+}
+
+function showPaymentMethods() {
+    showAlert('warning', 'ميزة إدارة طرق الدفع ستكون متاحة قريباً');
 }
 
 function notificationSettings() {
@@ -1322,21 +2037,13 @@ function securitySettings() {
 }
 
 function contactSupport() {
-    showAlert('success', 'للدعم الفني، يرجى التواصل على: support@musharaka.com');
+    showAlert('success', 'للدعم الفني، يرجى التواصل على: support@musharaka.com أو الواتساب: 01234567890');
 }
 
 function aboutApp() {
-    showAlert('success', 'مشاركة - منصة التمويل الجماعي الرائدة في الوطن العربي v1.0');
+    showAlert('success', 'مشاركة - منصة التمويل الجماعي الرائدة في الوطن العربي v1.0.0');
 }
 
-function withdrawProfits() {
-    showAlert('warning', 'ميزة سحب الأرباح ستكون متاحة قريباً');
-}
-
-function reinvest() {
-    showAlert('warning', 'ميزة إعادة الاستثمار ستكون متاحة قريباً');
-}
-
-function downloadReport() {
-    showAlert('warning', 'ميزة تحميل التقرير الشهري ستكون متاحة قريباً');
+function downloadInvestmentReport() {
+    showAlert('warning', 'ميزة تحميل تقرير الاستثمارات ستكون متاحة قريباً');
 }
