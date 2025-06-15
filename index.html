@@ -906,92 +906,2048 @@
             <div class="screen-padding"></div>
         </div>
 
-        <!-- Profile Screen -->
-        <div class="screen" id="profile">
+        <!-- Edit Profile Screen -->
+        <div class="screen" id="editProfile">
             <div class="header">
                 <div class="logo">
-                    <i class="fas fa-user-circle"></i>
-                    الملف الشخصي
+                    <i class="fas fa-edit"></i>
+                    تعديل المعلومات الشخصية
                 </div>
-                <div class="tagline">إدارة حسابك ومعلوماتك الشخصية</div>
+                <div class="tagline">تحديث البيانات والمعلومات الخاصة بك</div>
+            </div>
+            
+            <div id="editProfileAlert"></div>
+            
+            <form onsubmit="handleEditProfile(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            الاسم الأول
+                        </label>
+                        <input type="text" class="form-input with-icon" id="editFirstName" placeholder="الاسم الأول" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            الاسم الأخير
+                        </label>
+                        <input type="text" class="form-input with-icon" id="editLastName" placeholder="الاسم الأخير" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        البريد الإلكتروني
+                    </label>
+                    <input type="email" class="form-input with-icon" id="editEmail" placeholder="example@email.com" required>
+                    <i class="fas fa-envelope input-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-phone"></i>
+                        رقم الهاتف
+                    </label>
+                    <input type="tel" class="form-input with-icon" id="editPhone" placeholder="01xxxxxxxxx" required>
+                    <i class="fas fa-phone input-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-id-card"></i>
+                        الرقم القومي
+                    </label>
+                    <input type="text" class="form-input with-icon" id="editNationalId" placeholder="رقمك القومي" required>
+                    <i class="fas fa-id-card input-icon"></i>
+                </div>
+                
+                <!-- Fields for Investors -->
+                <div id="editInvestorFields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-graduation-cap"></i>
+                            المستوى التعليمي
+                        </label>
+                        <select class="form-select with-icon" id="editEducation">
+                            <option value="">اختر المستوى التعليمي</option>
+                            <option value="high_school">ثانوية عامة</option>
+                            <option value="diploma">دبلوم</option>
+                            <option value="bachelor">بكالوريوس</option>
+                            <option value="master">ماجستير</option>
+                            <option value="phd">دكتوراه</option>
+                        </select>
+                        <i class="fas fa-graduation-cap input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-money-bill-wave"></i>
+                            الدخل الشهري التقريبي
+                        </label>
+                        <select class="form-select with-icon" id="editIncome">
+                            <option value="">اختر الدخل الشهري</option>
+                            <option value="less_than_3000">أقل من 3,000 جنيه</option>
+                            <option value="3000_to_5000">3,000 - 5,000 جنيه</option>
+                            <option value="5000_to_10000">5,000 - 10,000 جنيه</option>
+                            <option value="10000_to_20000">10,000 - 20,000 جنيه</option>
+                            <option value="more_than_20000">أكثر من 20,000 جنيه</option>
+                        </select>
+                        <i class="fas fa-money-bill-wave input-icon"></i>
+                    </div>
+                </div>
+                
+                <!-- Fields for Project Owners -->
+                <div id="editOwnerFields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-building"></i>
+                            نوع النشاط التجاري
+                        </label>
+                        <select class="form-select with-icon" id="editBusinessType">
+                            <option value="">اختر نوع النشاط</option>
+                            <option value="restaurant">مطعم</option>
+                            <option value="store">متجر</option>
+                            <option value="cafe">مقهى</option>
+                            <option value="technology">تقنية</option>
+                            <option value="agriculture">زراعة</option>
+                            <option value="manufacturing">تصنيع</option>
+                            <option value="services">خدمات</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                        <i class="fas fa-building input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-map-marker-alt"></i>
+                            المحافظة
+                        </label>
+                        <select class="form-select with-icon" id="editGovernorate">
+                            <option value="">اختر المحافظة</option>
+                            <option value="cairo">القاهرة</option>
+                            <option value="giza">الجيزة</option>
+                            <option value="alexandria">الإسكندرية</option>
+                            <option value="qalyubia">القليوبية</option>
+                            <option value="dakahlia">الدقهلية</option>
+                            <option value="sharqia">الشرقية</option>
+                            <option value="gharbia">الغربية</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                        <i class="fas fa-map-marker-alt input-icon"></i>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-save"></i>
+                    حفظ التغييرات
+                </button>
+                <button type="button" class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 15px;">
+                    <i class="fas fa-arrow-right"></i>
+                    العودة للملف الشخصي
+                </button>
+            </form>
+        </div>
+
+        <!-- Payment Methods Screen -->
+        <div class="screen" id="paymentMethods">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-credit-card"></i>
+                    طرق الدفع المحفوظة
+                </div>
+                <div class="tagline">إدارة حساباتك البنكية والمحافظ الإلكترونية</div>
+            </div>
+            
+            <div class="card">
+                <button class="btn" onclick="addPaymentMethod()">
+                    <i class="fas fa-plus"></i>
+                    إضافة طريقة دفع جديدة
+                </button>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-list"></i>
+                    طرق الدفع المحفوظة
+                </h3>
+                <div id="savedPaymentMethods">
+                    <!-- Payment methods will be loaded here -->
+                </div>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+        </div>
+
+        <!-- Notification Settings Screen -->
+        <div class="screen" id="notificationSettings">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-bell"></i>
+                    إعدادات الإشعارات
+                </div>
+                <div class="tagline">التحكم في الإشعارات والتنبيهات التي تتلقاها</div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">طرق التواصل</h3>
+                
+                <div class="settings-list">
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>إشعارات البريد الإلكتروني</h4>
+                                <div class="settings-desc">تلقي الإشعارات عبر البريد الإلكتروني</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="emailNotificationsToggle" onclick="toggleNotificationSetting('emailNotifications')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-sms"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>رسائل SMS</h4>
+                                <div class="settings-desc">تلقي إشعارات عبر الرسائل النصية</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="smsNotificationsToggle" onclick="toggleNotificationSetting('smsNotifications')">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">أنواع الإشعارات</h3>
+                
+                <div class="settings-list">
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>تحديثات الاستثمارات</h4>
+                                <div class="settings-desc">إشعارات حول استثماراتك وأرباحك</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="investmentUpdatesToggle" onclick="toggleNotificationSetting('investmentUpdates')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>تحديثات المشاريع</h4>
+                                <div class="settings-desc">إشعارات حول المشاريع الجديدة والتحديثات</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="projectUpdatesToggle" onclick="toggleNotificationSetting('projectUpdates')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>إشعارات الدفع</h4>
+                                <div class="settings-desc">تأكيدات المعاملات المالية والدفع</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="paymentNotificationsToggle" onclick="toggleNotificationSetting('paymentNotifications')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>تنبيهات الأمان</h4>
+                                <div class="settings-desc">إشعارات حول الأنشطة الأمنية والتسجيل</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="securityAlertsToggle" onclick="toggleNotificationSetting('securityAlerts')">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">إشعارات إضافية</h3>
+                
+                <div class="settings-list">
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>التقارير الأسبوعية</h4>
+                                <div class="settings-desc">ملخص أسبوعي لأنشطتك وأداء استثماراتك</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="weeklyReportsToggle" onclick="toggleNotificationSetting('weeklyReports')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-bullhorn"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>الرسائل التسويقية</h4>
+                                <div class="settings-desc">عروض خاصة ونصائح استثمارية</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="marketingEmailsToggle" onclick="toggleNotificationSetting('marketingEmails')">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+        </div>
+
+        <!-- Security Settings Screen -->
+        <div class="screen" id="securitySettings">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    الأمان والخصوصية
+                </div>
+                <div class="tagline">إدارة كلمة المرور وإعدادات الأمان</div>
+            </div>
+            
+            <div id="securityAlert"></div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">تغيير كلمة المرور</h3>
+                
+                <form onsubmit="handleChangePassword(event)">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-lock"></i>
+                            كلمة المرور الحالية
+                        </label>
+                        <input type="password" class="form-input with-icon" id="currentPassword" placeholder="كلمة المرور الحالية" required>
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-key"></i>
+                            كلمة المرور الجديدة
+                        </label>
+                        <input type="password" class="form-input with-icon" id="newPassword" placeholder="كلمة المرور الجديدة" required>
+                        <i class="fas fa-key input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-check"></i>
+                            تأكيد كلمة المرور الجديدة
+                        </label>
+                        <input type="password" class="form-input with-icon" id="confirmPassword" placeholder="تأكيد كلمة المرور" required>
+                        <i class="fas fa-check input-icon"></i>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-save"></i>
+                        تحديث كلمة المرور
+                    </button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">المصادقة الثنائية</h3>
+                
+                <div class="settings-list">
+                    <div class="settings-item" onclick="enable2FA()">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>تفعيل المصادقة الثنائية</h4>
+                                <div class="settings-desc">حماية إضافية لحسابك باستخدام الهاتف</div>
+                            </div>
+                        </div>
+                        <div class="settings-arrow">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">نشاط الحساب</h3>
+                
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="lastLoginTime">منذ ساعة</div>
+                        <div class="stat-label">آخر تسجيل دخول</div>
+                    </div>
+                    <div class="stat-card secondary">
+                        <div class="stat-number" id="recentAttempts">0</div>
+                        <div class="stat-label">محاولات دخول حديثة</div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-outline" onclick="viewLoginHistory()">
+                    <i class="fas fa-history"></i>
+                    عرض سجل تسجيل الدخول
+                </button>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+        </div>
+
+        <!-- Contact Support Screen -->
+        <div class="screen" id="contactSupport">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-headset"></i>
+                    الدعم الفني
+                </div>
+                <div class="tagline">تواصل مع فريق الدعم لمساعدتك</div>
+            </div>
+            
+            <div id="supportAlert"></div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">طرق التواصل السريع</h3>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-icon" style="background: #25D366;">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">واتساب</div>
+                            <div class="feature-description">01234567890 - متاح 24/7</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon" style="background: #1DA1F2;">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">البريد الإلكتروني</div>
+                            <div class="feature-description">support@musharaka.com</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon" style="background: #FF6B35;">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">الهاتف</div>
+                            <div class="feature-description">19990 - من السبت للخميس 9ص-6م</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">إرسال رسالة</h3>
+                
+                <form onsubmit="handleSupportMessage(event)">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-tag"></i>
+                            موضوع الرسالة
+                        </label>
+                        <select class="form-select with-icon" id="supportSubject" required>
+                            <option value="">اختر موضوع الرسالة</option>
+                            <option value="technical">مشكلة تقنية</option>
+                            <option value="payment">مشكلة في الدفع</option>
+                            <option value="investment">استفسار عن الاستثمار</option>
+                            <option value="project">مشكلة في المشروع</option>
+                            <option value="account">مشكلة في الحساب</option>
+                            <option value="suggestion">اقتراح أو تحسين</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                        <i class="fas fa-tag input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            أولوية الرسالة
+                        </label>
+                        <select class="form-select with-icon" id="supportPriority" required>
+                            <option value="low">منخفضة</option>
+                            <option value="medium" selected>متوسطة</option>
+                            <option value="high">عالية</option>
+                            <option value="urgent">عاجل</option>
+                        </select>
+                        <i class="fas fa-exclamation-triangle input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-comment"></i>
+                            تفاصيل الرسالة
+                        </label>
+                        <textarea class="form-textarea" id="supportMessage" placeholder="اكتب تفاصيل مشكلتك أو استفسارك هنا..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-paper-plane"></i>
+                        إرسال الرسالة
+                    </button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">الأسئلة الشائعة</h3>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-question"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">كيف أبدأ الاستثمار؟</div>
+                            <div class="feature-description">شحن المحفظة ثم اختيار المشروع المناسب</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-question"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">كيف أسحب أرباحي؟</div>
+                            <div class="feature-description">من خلال صفحة سحب الأرباح في حسابك</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-question"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">كم تستغرق عملية التوثيق؟</div>
+                            <div class="feature-description">عادة من 24-48 ساعة عمل</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+        </div>
+
+        <!-- About App Screen -->
+        <div class="screen" id="aboutApp">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-info-circle"></i>
+                    حول التطبيق
+                </div>
+                <div class="tagline">معلومات عن مشاركة والشروط والأحكام</div>
             </div>
             
             <div class="card">
                 <div style="text-align: center; margin-bottom: 25px;">
-                    <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #00796B 0%, #004D40 100%); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 30px;">
-                        <i class="fas fa-user"></i>
+                    <div style="width: 120px; height: 120px; border-radius: 20px; background: linear-gradient(135deg, #00796B 0%, #004D40 100%); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 50px;">
+                        <i class="fas fa-handshake"></i>
                     </div>
-                    <h3 style="color: #00796B; margin-bottom: 5px;" id="profileName">اسم المستخدم</h3>
-                    <p style="color: #666; font-size: 14px;" id="profileType">نوع الحساب</p>
-                    <div id="profileStatus" class="project-status status-pending" style="margin-top: 10px;">في انتظار التوثيق</div>
+                    <h2 style="color: #00796B; margin-bottom: 10px;">مشاركة</h2>
+                    <p style="color: #666; font-size: 16px;">منصة التمويل الجماعي الرائدة</p>
+                    <div style="background: #E8F5E8; color: #00796B; padding: 5px 15px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: 600; margin-top: 10px;">
+                        الإصدار 1.0.0
+                    </div>
                 </div>
                 
-                <ul class="feature-list">
-                    <li class="feature-item" onclick="editProfile()">
-                        <div class="feature-icon">
-                            <i class="fas fa-edit"></i>
-                        </div>
-                        <div class="feature-text">
-                            <div class="feature-title">تعديل المعلومات الشخصية</div>
-                            <div class="feature-description">تحديث البيانات والمعلومات</div>
-                        </div>
-                    </li>
-                    <li class="feature-item" onclick="showPaymentMethods()">
-                        <div class="feature-icon">
-                            <i class="fas fa-credit-card"></i>
-                        </div>
-                        <div class="feature-text">
-                            <div class="feature-title">طرق الدفع المحفوظة</div>
-                            <div class="feature-description">إدارة حساباتك البنكية والمحافظ</div>
-                        </div>
-                    </li>
-                    <li class="feature-item" onclick="notificationSettings()">
-                        <div class="feature-icon">
-                            <i class="fas fa-bell"></i>
-                        </div>
-                        <div class="feature-text">
-                            <div class="feature-title">إعدادات الإشعارات</div>
-                            <div class="feature-description">التحكم في الإشعارات والتنبيهات</div>
-                        </div>
-                    </li>
-                    <li class="feature-item" onclick="securitySettings()">
+                <div style="text-align: center; color: #666; line-height: 1.8;">
+                    <p>مشاركة هي منصة تمويل جماعي مبتكرة تهدف إلى ربط المستثمرين بأصحاب المشاريع الصغيرة والمتوسطة في الوطن العربي.</p>
+                    <p>نسعى لتوفير بيئة آمنة وشفافة للاستثمار والحصول على التمويل.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">مميزات التطبيق</h3>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
                         <div class="feature-icon">
                             <i class="fas fa-shield-alt"></i>
                         </div>
                         <div class="feature-text">
-                            <div class="feature-title">الأمان والخصوصية</div>
-                            <div class="feature-description">إدارة كلمة المرور والأمان</div>
+                            <div class="feature-title">آمن ومضمون</div>
+                            <div class="feature-description">تشفير البيانات وحماية عالية المستوى</div>
                         </div>
-                    </li>
-                    <li class="feature-item" onclick="contactSupport()">
+                    </div>
+                    
+                    <div class="feature-item">
                         <div class="feature-icon">
-                            <i class="fas fa-headset"></i>
+                            <i class="fas fa-chart-line"></i>
                         </div>
                         <div class="feature-text">
-                            <div class="feature-title">الدعم الفني</div>
-                            <div class="feature-description">تواصل مع فريق الدعم</div>
+                            <div class="feature-title">عوائد مجزية</div>
+                            <div class="feature-description">فرص استثمارية متنوعة بعوائد تنافسية</div>
                         </div>
-                    </li>
-                    <li class="feature-item" onclick="aboutApp()">
+                    </div>
+                    
+                    <div class="feature-item">
                         <div class="feature-icon">
-                            <i class="fas fa-info-circle"></i>
+                            <i class="fas fa-users"></i>
                         </div>
                         <div class="feature-text">
-                            <div class="feature-title">حول التطبيق</div>
-                            <div class="feature-description">معلومات عن مشاركة والشروط</div>
+                            <div class="feature-title">مجتمع نشط</div>
+                            <div class="feature-description">آلاف المستثمرين وأصحاب المشاريع</div>
                         </div>
-                    </li>
-                </ul>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">سهولة الاستخدام</div>
+                            <div class="feature-description">واجهة بسيطة وتجربة مستخدم سلسة</div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div class="card">
-                <button class="btn btn-danger" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    تسجيل الخروج
+                <h3 style="color: #00796B; margin-bottom: 20px;">الشروط والأحكام</h3>
+                
+                <div style="background: #F8F9FA; padding: 20px; border-radius: 12px; color: #666; font-size: 14px; line-height: 1.6;">
+                    <p><strong>1. قبول الشروط:</strong> باستخدام هذا التطبيق، فإنك توافق على جميع الشروط والأحكام.</p>
+                    <p><strong>2. الاستثمار:</strong> جميع الاستثمارات تحمل مخاطر، والعوائد المتوقعة غير مضمونة.</p>
+                    <p><strong>3. الرسوم:</strong> يتم خصم 3% كعمولة للمنصة من الاستثمارات الناجحة.</p>
+                    <p><strong>4. الأمان:</strong> المستخدم مسؤول عن الحفاظ على أمان حسابه وكلمة المرور.</p>
+                    <p><strong>5. التوثيق:</strong> يجب توثيق جميع الحسابات قبل بدء الاستثمار.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">معلومات الشركة</h3>
+                
+                <div style="color: #666; font-size: 14px;">
+                    <p><strong>اسم الشركة:</strong> شركة مشاركة للتمويل الجماعي</p>
+                    <p><strong>العنوان:</strong> القاهرة، مصر</p>
+                    <p><strong>البريد الإلكتروني:</strong> info@musharaka.com</p>
+                    <p><strong>الهاتف:</strong> 19990</p>
+                    <p><strong>الموقع الإلكتروني:</strong> www.musharaka.com</p>
+                </div>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+        </div>
+
+        <!-- Add Payment Method Modal -->
+        <div class="modal" id="addPaymentMethodModal">
+            <div class="modal-content">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-plus"></i>
+                    إضافة طريقة دفع جديدة
+                </h3>
+                
+                <div id="addPaymentMethodAlert"></div>
+                
+                <form onsubmit="handleAddPaymentMethod(event)">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-credit-card"></i>
+                            نوع طريقة الدفع
+                        </label>
+                        <select class="form-select with-icon" id="newPaymentType" required>
+                            <option value="">اختر نوع طريقة الدفع</option>
+                            <option value="bank">حساب بنكي</option>
+                            <option value="vodafone">فودافون كاش</option>
+                            <option value="fawry">فوري</option>
+                            <option value="visa">فيزا/ماستركارد</option>
+                        </select>
+                        <i class="fas fa-credit-card input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-hashtag"></i>
+                            رقم الحساب/البطاقة
+                        </label>
+                        <input type="text" class="form-input with-icon" id="newPaymentAccount" placeholder="رقم الحساب أو البطاقة" required>
+                        <i class="fas fa-hashtag input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            اسم صاحب الحساب
+                        </label>
+                        <input type="text" class="form-input with-icon" id="newPaymentHolder" placeholder="الاسم كما هو مسجل" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-save"></i>
+                        حفظ طريقة الدفع
+                    </button>
+                    <button type="button" class="btn btn-outline" onclick="closeModal()" style="margin-top: 10px;">
+                        <i class="fas fa-times"></i>
+                        إلغاء
+                    </button>
+                </form>
+            </div>
+        </div>
+                        <!-- Edit Profile Screen -->
+        <div class="screen" id="editProfile">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-edit"></i>
+                    تعديل المعلومات الشخصية
+                </div>
+                <div class="tagline">تحديث البيانات والمعلومات الخاصة بك</div>
+            </div>
+            
+            <div id="editProfileAlert"></div>
+            
+            <form onsubmit="handleEditProfile(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            الاسم الأول
+                        </label>
+                        <input type="text" class="form-input with-icon" id="editFirstName" placeholder="الاسم الأول" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            الاسم الأخير
+                        </label>
+                        <input type="text" class="form-input with-icon" id="editLastName" placeholder="الاسم الأخير" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        البريد الإلكتروني
+                    </label>
+                    <input type="email" class="form-input with-icon" id="editEmail" placeholder="example@email.com" required>
+                    <i class="fas fa-envelope input-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-phone"></i>
+                        رقم الهاتف
+                    </label>
+                    <input type="tel" class="form-input with-icon" id="editPhone" placeholder="01xxxxxxxxx" required>
+                    <i class="fas fa-phone input-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-id-card"></i>
+                        الرقم القومي
+                    </label>
+                    <input type="text" class="form-input with-icon" id="editNationalId" placeholder="رقمك القومي" required>
+                    <i class="fas fa-id-card input-icon"></i>
+                </div>
+                
+                <!-- Fields for Investors -->
+                <div id="editInvestorFields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-graduation-cap"></i>
+                            المستوى التعليمي
+                        </label>
+                        <select class="form-select with-icon" id="editEducation">
+                            <option value="">اختر المستوى التعليمي</option>
+                            <option value="high_school">ثانوية عامة</option>
+                            <option value="diploma">دبلوم</option>
+                            <option value="bachelor">بكالوريوس</option>
+                            <option value="master">ماجستير</option>
+                            <option value="phd">دكتوراه</option>
+                        </select>
+                        <i class="fas fa-graduation-cap input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-money-bill-wave"></i>
+                            الدخل الشهري التقريبي
+                        </label>
+                        <select class="form-select with-icon" id="editIncome">
+                            <option value="">اختر الدخل الشهري</option>
+                            <option value="less_than_3000">أقل من 3,000 جنيه</option>
+                            <option value="3000_to_5000">3,000 - 5,000 جنيه</option>
+                            <option value="5000_to_10000">5,000 - 10,000 جنيه</option>
+                            <option value="10000_to_20000">10,000 - 20,000 جنيه</option>
+                            <option value="more_than_20000">أكثر من 20,000 جنيه</option>
+                        </select>
+                        <i class="fas fa-money-bill-wave input-icon"></i>
+                    </div>
+                </div>
+                
+                <!-- Fields for Project Owners -->
+                <div id="editOwnerFields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-building"></i>
+                            نوع النشاط التجاري
+                        </label>
+                        <select class="form-select with-icon" id="editBusinessType">
+                            <option value="">اختر نوع النشاط</option>
+                            <option value="restaurant">مطعم</option>
+                            <option value="store">متجر</option>
+                            <option value="cafe">مقهى</option>
+                            <option value="technology">تقنية</option>
+                            <option value="agriculture">زراعة</option>
+                            <option value="manufacturing">تصنيع</option>
+                            <option value="services">خدمات</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                        <i class="fas fa-building input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-map-marker-alt"></i>
+                            المحافظة
+                        </label>
+                        <select class="form-select with-icon" id="editGovernorate">
+                            <option value="">اختر المحافظة</option>
+                            <option value="cairo">القاهرة</option>
+                            <option value="giza">الجيزة</option>
+                            <option value="alexandria">الإسكندرية</option>
+                            <option value="qalyubia">القليوبية</option>
+                            <option value="dakahlia">الدقهلية</option>
+                            <option value="sharqia">الشرقية</option>
+                            <option value="gharbia">الغربية</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                        <i class="fas fa-map-marker-alt input-icon"></i>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-save"></i>
+                    حفظ التغييرات
+                </button>
+                <button type="button" class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 15px;">
+                    <i class="fas fa-arrow-right"></i>
+                    العودة للملف الشخصي
+                </button>
+            </form>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Payment Methods Screen -->
+        <div class="screen" id="paymentMethods">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-credit-card"></i>
+                    طرق الدفع المحفوظة
+                </div>
+                <div class="tagline">إدارة حساباتك البنكية والمحافظ الإلكترونية</div>
+            </div>
+            
+            <div class="card">
+                <button class="btn" onclick="addPaymentMethod()">
+                    <i class="fas fa-plus"></i>
+                    إضافة طريقة دفع جديدة
                 </button>
             </div>
             
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-list"></i>
+                    طرق الدفع المحفوظة
+                </h3>
+                <div id="savedPaymentMethods">
+                    <!-- Payment methods will be loaded here -->
+                </div>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+            
             <div class="screen-padding"></div>
+        </div>
+
+        <!-- Notification Settings Screen -->
+        <div class="screen" id="notificationSettings">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-bell"></i>
+                    إعدادات الإشعارات
+                </div>
+                <div class="tagline">التحكم في الإشعارات والتنبيهات التي تتلقاها</div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">طرق التواصل</h3>
+                
+                <div class="settings-list">
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>إشعارات البريد الإلكتروني</h4>
+                                <div class="settings-desc">تلقي الإشعارات عبر البريد الإلكتروني</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="emailNotificationsToggle" onclick="toggleNotificationSetting('emailNotifications')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-sms"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>رسائل SMS</h4>
+                                <div class="settings-desc">تلقي إشعارات عبر الرسائل النصية</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="smsNotificationsToggle" onclick="toggleNotificationSetting('smsNotifications')">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">أنواع الإشعارات</h3>
+                
+                <div class="settings-list">
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>تحديثات الاستثمارات</h4>
+                                <div class="settings-desc">إشعارات حول استثماراتك وأرباحك</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="investmentUpdatesToggle" onclick="toggleNotificationSetting('investmentUpdates')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>تحديثات المشاريع</h4>
+                                <div class="settings-desc">إشعارات حول المشاريع الجديدة والتحديثات</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="projectUpdatesToggle" onclick="toggleNotificationSetting('projectUpdates')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>إشعارات الدفع</h4>
+                                <div class="settings-desc">تأكيدات المعاملات المالية والدفع</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="paymentNotificationsToggle" onclick="toggleNotificationSetting('paymentNotifications')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>تنبيهات الأمان</h4>
+                                <div class="settings-desc">إشعارات حول الأنشطة الأمنية والتسجيل</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="securityAlertsToggle" onclick="toggleNotificationSetting('securityAlerts')">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">إشعارات إضافية</h3>
+                
+                <div class="settings-list">
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>التقارير الأسبوعية</h4>
+                                <div class="settings-desc">ملخص أسبوعي لأنشطتك وأداء استثماراتك</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="weeklyReportsToggle" onclick="toggleNotificationSetting('weeklyReports')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-bullhorn"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>الرسائل التسويقية</h4>
+                                <div class="settings-desc">عروض خاصة ونصائح استثمارية</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="marketingEmailsToggle" onclick="toggleNotificationSetting('marketingEmails')">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Security Settings Screen -->
+        <div class="screen" id="securitySettings">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    الأمان والخصوصية
+                </div>
+                <div class="tagline">إدارة كلمة المرور وإعدادات الأمان</div>
+            </div>
+            
+            <div id="securityAlert"></div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">تغيير كلمة المرور</h3>
+                
+                <form onsubmit="handleChangePassword(event)">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-lock"></i>
+                            كلمة المرور الحالية
+                        </label>
+                        <input type="password" class="form-input with-icon" id="currentPassword" placeholder="كلمة المرور الحالية" required>
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-key"></i>
+                            كلمة المرور الجديدة
+                        </label>
+                        <input type="password" class="form-input with-icon" id="newPassword" placeholder="كلمة المرور الجديدة" required>
+                        <i class="fas fa-key input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-check"></i>
+                            تأكيد كلمة المرور الجديدة
+                        </label>
+                        <input type="password" class="form-input with-icon" id="confirmPassword" placeholder="تأكيد كلمة المرور" required>
+                        <i class="fas fa-check input-icon"></i>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-save"></i>
+                        تحديث كلمة المرور
+                    </button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">المصادقة الثنائية</h3>
+                
+                <div class="settings-list">
+                    <div class="settings-item" onclick="enable2FA()">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>تفعيل المصادقة الثنائية</h4>
+                                <div class="settings-desc">حماية إضافية لحسابك باستخدام الهاتف</div>
+                            </div>
+                        </div>
+                        <div class="settings-arrow">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">نشاط الحساب</h3>
+                
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="lastLoginTime">منذ ساعة</div>
+                        <div class="stat-label">آخر تسجيل دخول</div>
+                    </div>
+                    <div class="stat-card secondary">
+                        <div class="stat-number" id="recentAttempts">0</div>
+                        <div class="stat-label">محاولات دخول حديثة</div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-outline" onclick="viewLoginHistory()">
+                    <i class="fas fa-history"></i>
+                    عرض سجل تسجيل الدخول
+                </button>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Contact Support Screen -->
+        <div class="screen" id="contactSupport">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-headset"></i>
+                    الدعم الفني
+                </div>
+                <div class="tagline">تواصل مع فريق الدعم لمساعدتك</div>
+            </div>
+            
+            <div id="supportAlert"></div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">طرق التواصل السريع</h3>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-icon" style="background: #25D366;">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">واتساب</div>
+                            <div class="feature-description">01234567890 - متاح 24/7</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon" style="background: #1DA1F2;">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">البريد الإلكتروني</div>
+                            <div class="feature-description">support@musharaka.com</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon" style="background: #FF6B35;">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">الهاتف</div>
+                            <div class="feature-description">19990 - من السبت للخميس 9ص-6م</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">إرسال رسالة</h3>
+                
+                <form onsubmit="handleSupportMessage(event)">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-tag"></i>
+                            موضوع الرسالة
+                        </label>
+                        <select class="form-select with-icon" id="supportSubject" required>
+                            <option value="">اختر موضوع الرسالة</option>
+                            <option value="technical">مشكلة تقنية</option>
+                            <option value="payment">مشكلة في الدفع</option>
+                            <option value="investment">استفسار عن الاستثمار</option>
+                            <option value="project">مشكلة في المشروع</option>
+                            <option value="account">مشكلة في الحساب</option>
+                            <option value="suggestion">اقتراح أو تحسين</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                        <i class="fas fa-tag input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            أولوية الرسالة
+                        </label>
+                        <select class="form-select with-icon" id="supportPriority" required>
+                            <option value="low">منخفضة</option>
+                            <option value="medium" selected>متوسطة</option>
+                            <option value="high">عالية</option>
+                            <option value="urgent">عاجل</option>
+                        </select>
+                        <i class="fas fa-exclamation-triangle input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-comment"></i>
+                            تفاصيل الرسالة
+                        </label>
+                        <textarea class="form-textarea" id="supportMessage" placeholder="اكتب تفاصيل مشكلتك أو استفسارك هنا..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-paper-plane"></i>
+                        إرسال الرسالة
+                    </button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">الأسئلة الشائعة</h3>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-question"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">كيف أبدأ الاستثمار؟</div>
+                            <div class="feature-description">شحن المحفظة ثم اختيار المشروع المناسب</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-question"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">كيف أسحب أرباحي؟</div>
+                            <div class="feature-description">من خلال صفحة سحب الأرباح في حسابك</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-question"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">كم تستغرق عملية التوثيق؟</div>
+                            <div class="feature-description">عادة من 24-48 ساعة عمل</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- About App Screen -->
+        <div class="screen" id="aboutApp">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-info-circle"></i>
+                    حول التطبيق
+                </div>
+                <div class="tagline">معلومات عن مشاركة والشروط والأحكام</div>
+            </div>
+            
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <div style="width: 120px; height: 120px; border-radius: 20px; background: linear-gradient(135deg, #00796B 0%, #004D40 100%); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 50px;">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h2 style="color: #00796B; margin-bottom: 10px;">مشاركة</h2>
+                    <p style="color: #666; font-size: 16px;">منصة التمويل الجماعي الرائدة</p>
+                    <div style="background: #E8F5E8; color: #00796B; padding: 5px 15px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: 600; margin-top: 10px;">
+                        الإصدار 1.0.0
+                    </div>
+                </div>
+                
+                <div style="text-align: center; color: #666; line-height: 1.8;">
+                    <p>مشاركة هي منصة تمويل جماعي مبتكرة تهدف إلى ربط المستثمرين بأصحاب المشاريع الصغيرة والمتوسطة في الوطن العربي.</p>
+                    <p>نسعى لتوفير بيئة آمنة وشفافة للاستثمار والحصول على التمويل.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">مميزات التطبيق</h3>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">آمن ومضمون</div>
+                            <div class="feature-description">تشفير البيانات وحماية عالية المستوى</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">عوائد مجزية</div>
+                            <div class="feature-description">فرص استثمارية متنوعة بعوائد تنافسية</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">مجتمع نشط</div>
+                            <div class="feature-description">آلاف المستثمرين وأصحاب المشاريع</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">سهولة الاستخدام</div>
+                            <div class="feature-description">واجهة بسيطة وتجربة مستخدم سلسة</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">الشروط والأحكام</h3>
+                
+                <div style="background: #F8F9FA; padding: 20px; border-radius: 12px; color: #666; font-size: 14px; line-height: 1.6;">
+                    <p><strong>1. قبول الشروط:</strong> باستخدام هذا التطبيق، فإنك توافق على جميع الشروط والأحكام.</p>
+                    <p><strong>2. الاستثمار:</strong> جميع الاستثمارات تحمل مخاطر، والعوائد المتوقعة غير مضمونة.</p>
+                    <p><strong>3. الرسوم:</strong> يتم خصم 3% كعمولة للمنصة من الاستثمارات الناجحة.</p>
+                    <p><strong>4. الأمان:</strong> المستخدم مسؤول عن الحفاظ على أمان حسابه وكلمة المرور.</p>
+                    <p><strong>5. التوثيق:</strong> يجب توثيق جميع الحسابات قبل بدء الاستثمار.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">معلومات الشركة</h3>
+                
+                <div style="color: #666; font-size: 14px;">
+                    <p><strong>اسم الشركة:</strong> شركة مشاركة للتمويل الجماعي</p>
+                    <p><strong>العنوان:</strong> القاهرة، مصر</p>
+                    <p><strong>البريد الإلكتروني:</strong> info@musharaka.com</p>
+                    <p><strong>الهاتف:</strong> 19990</p>
+                    <p><strong>الموقع الإلكتروني:</strong> www.musharaka.com</p>
+                </div>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Add Payment Method Modal -->
+        <div class="modal" id="addPaymentMethodModal">
+            <div class="modal-content">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-plus"></i>
+                    إضافة طريقة دفع جديدة
+                </h3>
+                
+                <div id="addPaymentMethodAlert"></div>
+                
+                <form onsubmit="handleAddPaymentMethod(event)">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-credit-card"></i>
+                            نوع طريقة الدفع
+                        </label>
+                        <select class="form-select with-icon" id="newPaymentType" required>
+                            <option value="">اختر نوع طريقة الدفع</option>
+                            <option value="bank">حساب بنكي</option>
+                            <option value="vodafone">فودافون كاش</option>
+                            <option value="fawry">فوري</option>
+                            <option value="visa">فيزا/ماستركارد</option>
+                        </select>
+                        <i class="fas fa-credit-card input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-hashtag"></i>
+                            رقم الحساب/البطاقة
+                        </label>
+                        <input type="text" class="form-input with-icon" id="newPaymentAccount" placeholder="رقم الحساب أو البطاقة" required>
+                        <i class="fas fa-hashtag input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            اسم صاحب الحساب
+                        </label>
+                        <input type="text" class="form-input with-icon" id="newPaymentHolder" placeholder="الاسم كما هو مسجل" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-save"></i>
+                        حفظ طريقة الدفع
+                    </button>
+                    <button type="button" class="btn btn-outline" onclick="closeModal()" style="margin-top: 10px;">
+                        <i class="fas fa-times"></i>
+                        إلغاء
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Payment Methods Screen -->
+        <div class="screen" id="paymentMethods">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-credit-card"></i>
+                    طرق الدفع المحفوظة
+                </div>
+                <div class="tagline">إدارة حساباتك البنكية والمحافظ الإلكترونية</div>
+            </div>
+            
+            <div class="card">
+                <button class="btn" onclick="addPaymentMethod()">
+                    <i class="fas fa-plus"></i>
+                    إضافة طريقة دفع جديدة
+                </button>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-list"></i>
+                    طرق الدفع المحفوظة
+                </h3>
+                <div id="savedPaymentMethods">
+                    <!-- Payment methods will be loaded here -->
+                </div>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Notification Settings Screen -->
+        <div class="screen" id="notificationSettings">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-bell"></i>
+                    إعدادات الإشعارات
+                </div>
+                <div class="tagline">التحكم في الإشعارات والتنبيهات التي تتلقاها</div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">طرق التواصل</h3>
+                
+                <div class="settings-list">
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>إشعارات البريد الإلكتروني</h4>
+                                <div class="settings-desc">تلقي الإشعارات عبر البريد الإلكتروني</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="emailNotificationsToggle" onclick="toggleNotificationSetting('emailNotifications')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-sms"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>رسائل SMS</h4>
+                                <div class="settings-desc">تلقي إشعارات عبر الرسائل النصية</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="smsNotificationsToggle" onclick="toggleNotificationSetting('smsNotifications')">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">أنواع الإشعارات</h3>
+                
+                <div class="settings-list">
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>تحديثات الاستثمارات</h4>
+                                <div class="settings-desc">إشعارات حول استثماراتك وأرباحك</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="investmentUpdatesToggle" onclick="toggleNotificationSetting('investmentUpdates')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>تحديثات المشاريع</h4>
+                                <div class="settings-desc">إشعارات حول المشاريع الجديدة والتحديثات</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="projectUpdatesToggle" onclick="toggleNotificationSetting('projectUpdates')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>إشعارات الدفع</h4>
+                                <div class="settings-desc">تأكيدات المعاملات المالية والدفع</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="paymentNotificationsToggle" onclick="toggleNotificationSetting('paymentNotifications')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>تنبيهات الأمان</h4>
+                                <div class="settings-desc">إشعارات حول الأنشطة الأمنية والتسجيل</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="securityAlertsToggle" onclick="toggleNotificationSetting('securityAlerts')">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">إشعارات إضافية</h3>
+                
+                <div class="settings-list">
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>التقارير الأسبوعية</h4>
+                                <div class="settings-desc">ملخص أسبوعي لأنشطتك وأداء استثماراتك</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="weeklyReportsToggle" onclick="toggleNotificationSetting('weeklyReports')">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-bullhorn"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>الرسائل التسويقية</h4>
+                                <div class="settings-desc">عروض خاصة ونصائح استثمارية</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="marketingEmailsToggle" onclick="toggleNotificationSetting('marketingEmails')">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Security Settings Screen -->
+        <div class="screen" id="securitySettings">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    الأمان والخصوصية
+                </div>
+                <div class="tagline">إدارة كلمة المرور وإعدادات الأمان</div>
+            </div>
+            
+            <div id="securityAlert"></div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">تغيير كلمة المرور</h3>
+                
+                <form onsubmit="handleChangePassword(event)">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-lock"></i>
+                            كلمة المرور الحالية
+                        </label>
+                        <input type="password" class="form-input with-icon" id="currentPassword" placeholder="كلمة المرور الحالية" required>
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-key"></i>
+                            كلمة المرور الجديدة
+                        </label>
+                        <input type="password" class="form-input with-icon" id="newPassword" placeholder="كلمة المرور الجديدة" required>
+                        <i class="fas fa-key input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-check"></i>
+                            تأكيد كلمة المرور الجديدة
+                        </label>
+                        <input type="password" class="form-input with-icon" id="confirmPassword" placeholder="تأكيد كلمة المرور" required>
+                        <i class="fas fa-check input-icon"></i>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-save"></i>
+                        تحديث كلمة المرور
+                    </button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">المصادقة الثنائية</h3>
+                
+                <div class="settings-list">
+                    <div class="settings-item" onclick="enable2FA()">
+                        <div class="settings-left">
+                            <div class="settings-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="settings-text">
+                                <h4>تفعيل المصادقة الثنائية</h4>
+                                <div class="settings-desc">حماية إضافية لحسابك باستخدام الهاتف</div>
+                            </div>
+                        </div>
+                        <div class="settings-arrow">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">نشاط الحساب</h3>
+                
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="lastLoginTime">منذ ساعة</div>
+                        <div class="stat-label">آخر تسجيل دخول</div>
+                    </div>
+                    <div class="stat-card secondary">
+                        <div class="stat-number" id="recentAttempts">0</div>
+                        <div class="stat-label">محاولات دخول حديثة</div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-outline" onclick="viewLoginHistory()">
+                    <i class="fas fa-history"></i>
+                    عرض سجل تسجيل الدخول
+                </button>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Contact Support Screen -->
+        <div class="screen" id="contactSupport">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-headset"></i>
+                    الدعم الفني
+                </div>
+                <div class="tagline">تواصل مع فريق الدعم لمساعدتك</div>
+            </div>
+            
+            <div id="supportAlert"></div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">طرق التواصل السريع</h3>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-icon" style="background: #25D366;">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">واتساب</div>
+                            <div class="feature-description">01234567890 - متاح 24/7</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon" style="background: #1DA1F2;">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">البريد الإلكتروني</div>
+                            <div class="feature-description">support@musharaka.com</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon" style="background: #FF6B35;">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">الهاتف</div>
+                            <div class="feature-description">19990 - من السبت للخميس 9ص-6م</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">إرسال رسالة</h3>
+                
+                <form onsubmit="handleSupportMessage(event)">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-tag"></i>
+                            موضوع الرسالة
+                        </label>
+                        <select class="form-select with-icon" id="supportSubject" required>
+                            <option value="">اختر موضوع الرسالة</option>
+                            <option value="technical">مشكلة تقنية</option>
+                            <option value="payment">مشكلة في الدفع</option>
+                            <option value="investment">استفسار عن الاستثمار</option>
+                            <option value="project">مشكلة في المشروع</option>
+                            <option value="account">مشكلة في الحساب</option>
+                            <option value="suggestion">اقتراح أو تحسين</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                        <i class="fas fa-tag input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            أولوية الرسالة
+                        </label>
+                        <select class="form-select with-icon" id="supportPriority" required>
+                            <option value="low">منخفضة</option>
+                            <option value="medium" selected>متوسطة</option>
+                            <option value="high">عالية</option>
+                            <option value="urgent">عاجل</option>
+                        </select>
+                        <i class="fas fa-exclamation-triangle input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-comment"></i>
+                            تفاصيل الرسالة
+                        </label>
+                        <textarea class="form-textarea" id="supportMessage" placeholder="اكتب تفاصيل مشكلتك أو استفسارك هنا..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-paper-plane"></i>
+                        إرسال الرسالة
+                    </button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">الأسئلة الشائعة</h3>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-question"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">كيف أبدأ الاستثمار؟</div>
+                            <div class="feature-description">شحن المحفظة ثم اختيار المشروع المناسب</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-question"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">كيف أسحب أرباحي؟</div>
+                            <div class="feature-description">من خلال صفحة سحب الأرباح في حسابك</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-question"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">كم تستغرق عملية التوثيق؟</div>
+                            <div class="feature-description">عادة من 24-48 ساعة عمل</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- About App Screen -->
+        <div class="screen" id="aboutApp">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-info-circle"></i>
+                    حول التطبيق
+                </div>
+                <div class="tagline">معلومات عن مشاركة والشروط والأحكام</div>
+            </div>
+            
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <div style="width: 120px; height: 120px; border-radius: 20px; background: linear-gradient(135deg, #00796B 0%, #004D40 100%); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 50px;">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h2 style="color: #00796B; margin-bottom: 10px;">مشاركة</h2>
+                    <p style="color: #666; font-size: 16px;">منصة التمويل الجماعي الرائدة</p>
+                    <div style="background: #E8F5E8; color: #00796B; padding: 5px 15px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: 600; margin-top: 10px;">
+                        الإصدار 1.0.0
+                    </div>
+                </div>
+                
+                <div style="text-align: center; color: #666; line-height: 1.8;">
+                    <p>مشاركة هي منصة تمويل جماعي مبتكرة تهدف إلى ربط المستثمرين بأصحاب المشاريع الصغيرة والمتوسطة في الوطن العربي.</p>
+                    <p>نسعى لتوفير بيئة آمنة وشفافة للاستثمار والحصول على التمويل.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">مميزات التطبيق</h3>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">آمن ومضمون</div>
+                            <div class="feature-description">تشفير البيانات وحماية عالية المستوى</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">عوائد مجزية</div>
+                            <div class="feature-description">فرص استثمارية متنوعة بعوائد تنافسية</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">مجتمع نشط</div>
+                            <div class="feature-description">آلاف المستثمرين وأصحاب المشاريع</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">سهولة الاستخدام</div>
+                            <div class="feature-description">واجهة بسيطة وتجربة مستخدم سلسة</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">الشروط والأحكام</h3>
+                
+                <div style="background: #F8F9FA; padding: 20px; border-radius: 12px; color: #666; font-size: 14px; line-height: 1.6;">
+                    <p><strong>1. قبول الشروط:</strong> باستخدام هذا التطبيق، فإنك توافق على جميع الشروط والأحكام.</p>
+                    <p><strong>2. الاستثمار:</strong> جميع الاستثمارات تحمل مخاطر، والعوائد المتوقعة غير مضمونة.</p>
+                    <p><strong>3. الرسوم:</strong> يتم خصم 3% كعمولة للمنصة من الاستثمارات الناجحة.</p>
+                    <p><strong>4. الأمان:</strong> المستخدم مسؤول عن الحفاظ على أمان حسابه وكلمة المرور.</p>
+                    <p><strong>5. التوثيق:</strong> يجب توثيق جميع الحسابات قبل بدء الاستثمار.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px;">معلومات الشركة</h3>
+                
+                <div style="color: #666; font-size: 14px;">
+                    <p><strong>اسم الشركة:</strong> شركة مشاركة للتمويل الجماعي</p>
+                    <p><strong>العنوان:</strong> القاهرة، مصر</p>
+                    <p><strong>البريد الإلكتروني:</strong> info@musharaka.com</p>
+                    <p><strong>الهاتف:</strong> 19990</p>
+                    <p><strong>الموقع الإلكتروني:</strong> www.musharaka.com</p>
+                </div>
+            </div>
+            
+            <button class="btn btn-outline" onclick="showScreen('profile')" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للملف الشخصي
+            </button>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Add Payment Method Modal -->
+        <div class="modal" id="addPaymentMethodModal">
+            <div class="modal-content">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-plus"></i>
+                    إضافة طريقة دفع جديدة
+                </h3>
+                
+                <div id="addPaymentMethodAlert"></div>
+                
+                <form onsubmit="handleAddPaymentMethod(event)">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-credit-card"></i>
+                            نوع طريقة الدفع
+                        </label>
+                        <select class="form-select with-icon" id="newPaymentType" required>
+                            <option value="">اختر نوع طريقة الدفع</option>
+                            <option value="bank">حساب بنكي</option>
+                            <option value="vodafone">فودافون كاش</option>
+                            <option value="fawry">فوري</option>
+                            <option value="visa">فيزا/ماستركارد</option>
+                        </select>
+                        <i class="fas fa-credit-card input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-hashtag"></i>
+                            رقم الحساب/البطاقة
+                        </label>
+                        <input type="text" class="form-input with-icon" id="newPaymentAccount" placeholder="رقم الحساب أو البطاقة" required>
+                        <i class="fas fa-hashtag input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            اسم صاحب الحساب
+                        </label>
+                        <input type="text" class="form-input with-icon" id="newPaymentHolder" placeholder="الاسم كما هو مسجل" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-save"></i>
+                        حفظ طريقة الدفع
+                    </button>
+                    <button type="button" class="btn btn-outline" onclick="closeModal()" style="margin-top: 10px;">
+                        <i class="fas fa-times"></i>
+                        إلغاء
+                    </button>
+                </form>
+            </div>
         </div>
 
         <!-- Notifications Screen -->
