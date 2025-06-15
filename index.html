@@ -320,6 +320,1218 @@
                 </div>
             </div>
             
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalInvestmentsValue">0</div>
+                    <div class="stat-label">إجمالي الاستثمارات (جنيه)</div>
+                </div>
+                <div class="stat-card secondary">
+                    <div class="stat-number" id="platformCommissions">0</div>
+                    <div class="stat-label">عمولات المنصة (جنيه)</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-number" id="activeProjectsCount">0</div>
+                    <div class="stat-label">مشاريع نشطة</div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-number" id="totalWithdrawals">0</div>
+                    <div class="stat-label">إجمالي السحوبات (جنيه)</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-users"></i>
+                    المستخدمين في الانتظار
+                </h3>
+                <div id="pendingUsersList">
+                    <!-- Pending users will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-project-diagram"></i>
+                    المشاريع في الانتظار
+                </h3>
+                <div id="pendingProjectsList">
+                    <!-- Pending projects will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-cog"></i>
+                    إعدادات المنصة
+                </h3>
+                <button class="btn" style="margin-bottom: 10px;" onclick="showAdminSettings()">
+                    <i class="fas fa-percentage"></i>
+                    إدارة الرسوم والعمولات
+                </button>
+                <button class="btn btn-secondary" style="margin-bottom: 10px;" onclick="showTransactionsHistory()">
+                    <i class="fas fa-history"></i>
+                    سجل المعاملات المالية
+                </button>
+                <button class="btn btn-outline" onclick="generatePlatformReport()">
+                    <i class="fas fa-file-alt"></i>
+                    تقرير المنصة الشامل
+                </button>
+            </div>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Home Screen for Investors -->
+        <div class="screen" id="investorHome">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-handshake"></i>
+                    مرحباً <span id="investorName"></span>
+                </div>
+                <div class="tagline">استثمر في المشاريع الواعدة واحصل على عوائد مجزية</div>
+            </div>
+            
+            <!-- Wallet Balance Card -->
+            <div class="card wallet-card">
+                <div class="wallet-header">
+                    <i class="fas fa-wallet"></i>
+                    <span>رصيد المحفظة</span>
+                </div>
+                <div class="wallet-balance" id="investorWalletBalance">0 جنيه</div>
+                <div class="wallet-actions">
+                    <button class="btn btn-small" onclick="showScreen('depositMoney')" style="flex: 1; margin-left: 10px;">
+                        <i class="fas fa-plus"></i>
+                        شحن المحفظة
+                    </button>
+                    <button class="btn btn-outline btn-small" onclick="showWalletHistory()" style="flex: 1;">
+                        <i class="fas fa-history"></i>
+                        سجل المعاملات
+                    </button>
+                </div>
+            </div>
+            
+            <div id="investorProjects">
+                <!-- Projects will be loaded here -->
+            </div>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Home Screen for Project Owners -->
+        <div class="screen" id="ownerHome">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-briefcase"></i>
+                    مرحباً <span id="ownerName"></span>
+                </div>
+                <div class="tagline">إدارة مشاريعك ومتابعة التمويل</div>
+            </div>
+            
+            <!-- Owner Wallet Balance Card -->
+            <div class="card wallet-card">
+                <div class="wallet-header">
+                    <i class="fas fa-piggy-bank"></i>
+                    <span>رصيد الأرباح</span>
+                </div>
+                <div class="wallet-balance" id="ownerEarningsBalance">0 جنيه</div>
+                <div class="wallet-actions">
+                    <button class="btn btn-small" onclick="showScreen('withdrawMoney')" style="flex: 1; margin-left: 10px;">
+                        <i class="fas fa-money-bill-wave"></i>
+                        سحب الأرباح
+                    </button>
+                    <button class="btn btn-outline btn-small" onclick="showEarningsHistory()" style="flex: 1;">
+                        <i class="fas fa-chart-line"></i>
+                        تاريخ الأرباح
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <button class="btn" onclick="showScreen('addProject')">
+                    <i class="fas fa-plus"></i>
+                    إضافة مشروع جديد
+                </button>
+            </div>
+            
+            <div id="ownerProjects">
+                <!-- Owner's projects will be loaded here -->
+            </div>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Deposit Money Screen -->
+        <div class="screen" id="depositMoney">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-credit-card"></i>
+                    شحن المحفظة
+                </div>
+                <div class="tagline">أضف رصيد إلى محفظتك لبدء الاستثمار</div>
+            </div>
+            
+            <div id="depositAlert"></div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-wallet"></i>
+                    الرصيد الحالي: <span id="currentWalletBalance">0 جنيه</span>
+                </h3>
+            </div>
+            
+            <form onsubmit="handleDeposit(event)">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-money-bill-wave"></i>
+                        مبلغ الشحن
+                    </label>
+                    <input type="number" class="form-input with-icon" id="depositAmount" placeholder="أدخل المبلغ" min="50" required>
+                    <i class="fas fa-money-bill-wave input-icon"></i>
+                </div>
+                
+                <div class="amount-buttons">
+                    <button type="button" class="amount-btn" onclick="selectDepositAmount(100)">100 جنيه</button>
+                    <button type="button" class="amount-btn" onclick="selectDepositAmount(500)">500 جنيه</button>
+                    <button type="button" class="amount-btn" onclick="selectDepositAmount(1000)">1,000 جنيه</button>
+                    <button type="button" class="amount-btn" onclick="selectDepositAmount(5000)">5,000 جنيه</button>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">طريقة الدفع</label>
+                    <div class="payment-methods">
+                        <div class="payment-method" onclick="selectPaymentMethod('fawry')" id="fawryMethod">
+                            <div class="payment-icon">
+                                <i class="fas fa-money-check-alt"></i>
+                            </div>
+                            <div class="payment-info">
+                                <div class="payment-name">فوري</div>
+                                <div class="payment-desc">رسوم: 5 جنيه</div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-method" onclick="selectPaymentMethod('vodafone')" id="vodafoneMethod">
+                            <div class="payment-icon" style="background: #E60000;">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="payment-info">
+                                <div class="payment-name">فودافون كاش</div>
+                                <div class="payment-desc">رسوم: 1%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-method" onclick="selectPaymentMethod('visa')" id="visaMethod">
+                            <div class="payment-icon" style="background: #1A1F71;">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="payment-info">
+                                <div class="payment-name">فيزا/ماستركارد</div>
+                                <div class="payment-desc">رسوم: 2.5%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="return-info" id="depositSummary" style="display: none;">
+                    <div class="return-item">
+                        <span>مبلغ الشحن:</span>
+                        <span id="depositAmountDisplay">0 جنيه</span>
+                    </div>
+                    <div class="return-item">
+                        <span>رسوم المعاملة:</span>
+                        <span id="depositFeesDisplay">0 جنيه</span>
+                    </div>
+                    <div class="return-item">
+                        <span><strong>المبلغ المستحق:</strong></span>
+                        <span style="color: #00796B; font-weight: 700;" id="totalDepositDisplay">0 جنيه</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-credit-card"></i>
+                    تأكيد الشحن
+                </button>
+                <button type="button" class="btn btn-outline" onclick="goToInvestorHome()" style="margin-top: 15px;">
+                    <i class="fas fa-arrow-right"></i>
+                    العودة للرئيسية
+                </button>
+            </form>
+        </div>
+
+        <!-- Withdraw Money Screen -->
+        <div class="screen" id="withdrawMoney">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-money-bill-wave"></i>
+                    سحب الأرباح
+                </div>
+                <div class="tagline">اسحب أرباحك إلى الحساب المفضل لديك</div>
+            </div>
+            
+            <div id="withdrawAlert"></div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-piggy-bank"></i>
+                    الرصيد المتاح للسحب: <span id="availableEarnings">0 جنيه</span>
+                </h3>
+            </div>
+            
+            <form onsubmit="handleWithdraw(event)">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-money-bill-wave"></i>
+                        مبلغ السحب
+                    </label>
+                    <input type="number" class="form-input with-icon" id="withdrawAmount" placeholder="أدخل المبلغ" min="100" required>
+                    <i class="fas fa-money-bill-wave input-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">طريقة السحب</label>
+                    <div class="payment-methods">
+                        <div class="payment-method" onclick="selectWithdrawMethod('bank')" id="bankMethod">
+                            <div class="payment-icon" style="background: #2E7D32;">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <div class="payment-info">
+                                <div class="payment-name">حساب بنكي</div>
+                                <div class="payment-desc">رسوم: 10 جنيه</div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-method" onclick="selectWithdrawMethod('vodafone')" id="vodafoneWithdrawMethod">
+                            <div class="payment-icon" style="background: #E60000;">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="payment-info">
+                                <div class="payment-name">فودافون كاش</div>
+                                <div class="payment-desc">رسوم: 1.5%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-method" onclick="selectWithdrawMethod('fawry')" id="fawryWithdrawMethod">
+                            <div class="payment-icon">
+                                <i class="fas fa-money-check-alt"></i>
+                            </div>
+                            <div class="payment-info">
+                                <div class="payment-name">فوري</div>
+                                <div class="payment-desc">رسوم: 8 جنيه</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bank Account Details -->
+                <div id="bankDetails" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-university"></i>
+                            اسم البنك
+                        </label>
+                        <select class="form-select with-icon" id="bankName" required>
+                            <option value="">اختر البنك</option>
+                            <option value="nbe">البنك الأهلي المصري</option>
+                            <option value="banque_misr">بنك مصر</option>
+                            <option value="cib">البنك التجاري الدولي</option>
+                            <option value="qnb">بنك قطر الوطني</option>
+                            <option value="alex_bank">بنك الإسكندرية</option>
+                            <option value="arab_bank">البنك العربي</option>
+                            <option value="other">بنك آخر</option>
+                        </select>
+                        <i class="fas fa-university input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-credit-card"></i>
+                            رقم الحساب/IBAN
+                        </label>
+                        <input type="text" class="form-input with-icon" id="accountNumber" placeholder="رقم الحساب أو IBAN" required>
+                        <i class="fas fa-credit-card input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            اسم صاحب الحساب
+                        </label>
+                        <input type="text" class="form-input with-icon" id="accountHolderName" placeholder="الاسم كما هو مسجل في البنك" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+                
+                <!-- Mobile Wallet Details -->
+                <div id="mobileWalletDetails" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-phone"></i>
+                            رقم الهاتف المسجل
+                        </label>
+                        <input type="tel" class="form-input with-icon" id="walletPhoneNumber" placeholder="01xxxxxxxxx" required>
+                        <i class="fas fa-phone input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            اسم صاحب المحفظة
+                        </label>
+                        <input type="text" class="form-input with-icon" id="walletHolderName" placeholder="الاسم المسجل في المحفظة" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="return-info" id="withdrawSummary" style="display: none;">
+                    <div class="return-item">
+                        <span>مبلغ السحب:</span>
+                        <span id="withdrawAmountDisplay">0 جنيه</span>
+                    </div>
+                    <div class="return-item">
+                        <span>رسوم السحب:</span>
+                        <span id="withdrawFeesDisplay">0 جنيه</span>
+                    </div>
+                    <div class="return-item">
+                        <span>رسوم المنصة (2%):</span>
+                        <span id="platformFeesDisplay">0 جنيه</span>
+                    </div>
+                    <div class="return-item">
+                        <span><strong>المبلغ الذي ستحصل عليه:</strong></span>
+                        <span style="color: #4CAF50; font-weight: 700;" id="netWithdrawDisplay">0 جنيه</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-paper-plane"></i>
+                    طلب السحب
+                </button>
+                <button type="button" class="btn btn-outline" onclick="goToOwnerHome()" style="margin-top: 15px;">
+                    <i class="fas fa-arrow-right"></i>
+                    العودة للرئيسية
+                </button>
+            </form>
+        </div>
+
+        <!-- Add Project Screen -->
+        <div class="screen" id="addProject">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-plus"></i>
+                    إضافة مشروع جديد
+                </div>
+                <div class="tagline">أضف مشروعك وابدأ في جمع التمويل</div>
+            </div>
+            
+            <div id="addProjectAlert"></div>
+            
+            <form onsubmit="handleAddProject(event)">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-tag"></i>
+                        اسم المشروع
+                    </label>
+                    <input type="text" class="form-input with-icon" id="projectName" placeholder="اسم مشروعك" required>
+                    <i class="fas fa-tag input-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-align-left"></i>
+                        وصف المشروع
+                    </label>
+                    <textarea class="form-textarea" id="projectDescription" placeholder="اكتب وصفاً مفصلاً عن مشروعك وأهدافه" required></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-dollar-sign"></i>
+                            المبلغ المطلوب
+                        </label>
+                        <input type="number" class="form-input with-icon" id="targetAmount" placeholder="0" min="10000" required>
+                        <i class="fas fa-dollar-sign input-icon"></i>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-percentage"></i>
+                            العائد المتوقع (%)
+                        </label>
+                        <input type="number" class="form-input with-icon" id="expectedReturn" placeholder="0" min="5" max="30" required>
+                        <i class="fas fa-percentage input-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-calendar-alt"></i>
+                            مدة المشروع (بالشهور)
+                        </label>
+                        <input type="number" class="form-input with-icon" id="projectDuration" placeholder="0" min="3" max="36" required>
+                        <i class="fas fa-calendar-alt input-icon"></i>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-building"></i>
+                            نوع المشروع
+                        </label>
+                        <select class="form-select with-icon" id="projectType" required>
+                            <option value="">اختر النوع</option>
+                            <option value="restaurant">مطعم</option>
+                            <option value="store">متجر</option>
+                            <option value="cafe">مقهى</option>
+                            <option value="technology">تقنية</option>
+                            <option value="agriculture">زراعة</option>
+                            <option value="manufacturing">تصنيع</option>
+                            <option value="services">خدمات</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                        <i class="fas fa-building input-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-map-marker-alt"></i>
+                        موقع المشروع
+                    </label>
+                    <input type="text" class="form-input with-icon" id="projectLocation" placeholder="العنوان التفصيلي للمشروع" required>
+                    <i class="fas fa-map-marker-alt input-icon"></i>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <i class="fas fa-info-circle"></i>
+                    <span>سيتم خصم رسوم إدارية بنسبة 3% من إجمالي المبلغ المجمع عند نجاح المشروع</span>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-paper-plane"></i>
+                    إرسال المشروع للمراجعة
+                </button>
+                <button type="button" class="btn btn-outline" onclick="goToOwnerHome()" style="margin-top: 15px;">
+                    <i class="fas fa-arrow-right"></i>
+                    العودة لمشاريعي
+                </button>
+            </form>
+        </div>
+
+        <!-- Investor Dashboard -->
+        <div class="screen" id="investorDashboard">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-chart-bar"></i>
+                    محفظة الاستثمار
+                </div>
+                <div class="tagline">تابع استثماراتك وأرباحك بشكل مباشر</div>
+            </div>
+            
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalInvested">0</div>
+                    <div class="stat-label">جنيه مستثمر</div>
+                </div>
+                <div class="stat-card secondary">
+                    <div class="stat-number" id="totalProfits">0</div>
+                    <div class="stat-label">جنيه أرباح</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-number" id="totalReturn">+0%</div>
+                    <div class="stat-label">العائد الإجمالي</div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-number" id="activeInvestments">0</div>
+                    <div class="stat-label">استثمارات نشطة</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-briefcase"></i>
+                    استثماراتي الحالية
+                </h3>
+                <div id="userInvestments">
+                    <!-- User investments will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="color: #00796B; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-cog"></i>
+                    العمليات السريعة
+                </h3>
+                <button class="btn" style="margin-bottom: 10px;" onclick="showScreen('depositMoney')">
+                    <i class="fas fa-credit-card"></i>
+                    شحن المحفظة
+                </button>
+                <button class="btn btn-secondary" style="margin-bottom: 10px;" onclick="showWalletHistory()">
+                    <i class="fas fa-history"></i>
+                    سجل المعاملات
+                </button>
+                <button class="btn btn-outline" onclick="downloadInvestmentReport()">
+                    <i class="fas fa-file-download"></i>
+                    تحميل تقرير الاستثمارات
+                </button>
+            </div>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Wallet History Screen -->
+        <div class="screen" id="walletHistory">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-history"></i>
+                    سجل المعاملات
+                </div>
+                <div class="tagline">تابع جميع عمليات المحفظة والمعاملات</div>
+            </div>
+            
+            <div class="card">
+                <div class="transaction-filters">
+                    <button class="filter-btn active" onclick="filterTransactions('all')">الكل</button>
+                    <button class="filter-btn" onclick="filterTransactions('deposit')">إيداع</button>
+                    <button class="filter-btn" onclick="filterTransactions('investment')">استثمار</button>
+                    <button class="filter-btn" onclick="filterTransactions('profit')">أرباح</button>
+                </div>
+            </div>
+            
+            <div class="card" id="transactionsList">
+                <!-- Transactions will be loaded here -->
+            </div>
+            
+            <button class="btn btn-outline" onclick="goBackFromHistory()" style="margin-top: 20px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة
+            </button>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div class="screen" id="profile">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-user-circle"></i>
+                    الملف الشخصي
+                </div>
+                <div class="tagline">إدارة حسابك ومعلوماتك الشخصية</div>
+            </div>
+            
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #00796B 0%, #004D40 100%); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 30px;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 style="color: #00796B; margin-bottom: 5px;" id="profileName">اسم المستخدم</h3>
+                    <p style="color: #666; font-size: 14px;" id="profileType">نوع الحساب</p>
+                    <div id="profileStatus" class="project-status status-pending" style="margin-top: 10px;">في انتظار التوثيق</div>
+                </div>
+                
+                <ul class="feature-list">
+                    <li class="feature-item" onclick="editProfile()">
+                        <div class="feature-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">تعديل المعلومات الشخصية</div>
+                            <div class="feature-description">تحديث البيانات والمعلومات</div>
+                        </div>
+                    </li>
+                    <li class="feature-item" onclick="showPaymentMethods()">
+                        <div class="feature-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">طرق الدفع المحفوظة</div>
+                            <div class="feature-description">إدارة حساباتك البنكية والمحافظ</div>
+                        </div>
+                    </li>
+                    <li class="feature-item" onclick="notificationSettings()">
+                        <div class="feature-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">إعدادات الإشعارات</div>
+                            <div class="feature-description">التحكم في الإشعارات والتنبيهات</div>
+                        </div>
+                    </li>
+                    <li class="feature-item" onclick="securitySettings()">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">الأمان والخصوصية</div>
+                            <div class="feature-description">إدارة كلمة المرور والأمان</div>
+                        </div>
+                    </li>
+                    <li class="feature-item" onclick="contactSupport()">
+                        <div class="feature-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">الدعم الفني</div>
+                            <div class="feature-description">تواصل مع فريق الدعم</div>
+                        </div>
+                    </li>
+                    <li class="feature-item" onclick="aboutApp()">
+                        <div class="feature-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="feature-text">
+                            <div class="feature-title">حول التطبيق</div>
+                            <div class="feature-description">معلومات عن مشاركة والشروط</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <button class="btn btn-danger" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    تسجيل الخروج
+                </button>
+            </div>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Notifications Screen -->
+        <div class="screen" id="notifications">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-bell"></i>
+                    الإشعارات
+                </div>
+                <div class="tagline">تابع آخر التحديثات والأخبار المهمة</div>
+            </div>
+            
+            <div class="card" id="notificationsList">
+                <!-- Notifications will be loaded here -->
+            </div>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Public Projects View -->
+        <div class="screen" id="publicProjects">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-eye"></i>
+                    المشاريع المتاحة
+                </div>
+                <div class="tagline">تصفح المشاريع الاستثمارية المتاحة</div>
+            </div>
+            
+            <div id="publicProjectsList">
+                <!-- Public projects will be loaded here -->
+            </div>
+            
+            <button class="btn" onclick="showScreen('register')" style="margin-top: 20px;">
+                <i class="fas fa-user-plus"></i>
+                إنشاء حساب للاستثمار
+            </button>
+            <button class="btn btn-outline" onclick="showScreen('welcome')" style="margin-top: 15px;">
+                <i class="fas fa-arrow-right"></i>
+                العودة للرئيسية
+            </button>
+            
+            <div class="screen-padding"></div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav" id="bottomNav">
+            <div class="nav-item active" onclick="navigateToHome()">
+                <div class="nav-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div>الرئيسية</div>
+            </div>
+            <div class="nav-item" onclick="navigateToDashboard()">
+                <div class="nav-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div>المحفظة</div>
+            </div>
+            <div class="nav-item" onclick="showScreen('notifications')">
+                <div class="nav-icon">
+                    <i class="fas fa-bell"></i>
+                    <div class="notification-badge" id="notificationBadge">0</div>
+                </div>
+                <div>الإشعارات</div>
+            </div>
+            <div class="nav-item" onclick="showScreen('profile')">
+                <div class="nav-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>الحساب</div>
+            </div>
+        </div>
+
+        <!-- Investment Modal -->
+        <div class="modal" id="investmentModal">
+            <div class="modal-content">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;" id="modalProjectName">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    استثمار في المشروع
+                </h3>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-money-bill-wave"></i>
+                        مبلغ الاستثمار
+                    </label>
+                    <input type="number" class="form-input with-icon" id="investmentAmount" placeholder="أدخل المبلغ بالجنيه" min="500">
+                    <i class="fas fa-money-bill-wave input-icon"></i>
+                </div>
+                
+                <div class="amount-buttons">
+                    <button type="button" class="amount-btn" onclick="selectAmount(1000)">1,000 جنيه</button>
+                    <button type="button" class="amount-btn" onclick="selectAmount(2500)">2,500 جنيه</button>
+                    <button type="button" class="amount-btn" onclick="selectAmount(5000)">5,000 جنيه</button>
+                    <button type="button" class="amount-btn" onclick="selectAmount(10000)">10,000 جنيه</button>
+                </div>
+                
+                <div class="return-info">
+                    <div class="return-item">
+                        <span>رصيد المحفظة:</span>
+                        <span id="modalWalletBalance">0 جنيه</span>
+                    </div>
+                    <div class="return-item">
+                        <span>مبلغ الاستثمار:</span>
+                        <span id="investmentDisplay">0 جنيه</span>
+                    </div>
+                    <div class="return-item">
+                        <span>العائد المتوقع:</span>
+                        <span style="color: #4CAF50;" id="expectedReturnDisplay">0 جنيه</span>
+                    </div>
+                    <div class="return-item">
+                        <span>مدة الاستثمار:</span>
+                        <span id="investmentPeriodDisplay">12 شهر</span>
+                    </div>
+                    <div class="return-item">
+                        <span><strong>إجمالي العائد:</strong></span>
+                        <span style="color: #00796B; font-weight: 700;" id="totalReturnDisplay">0 جنيه</span>
+                    </div>
+                </div>
+                
+                <button type="button" class="btn" onclick="confirmInvestment()">
+                    <i class="fas fa-check-circle"></i>
+                    تأكيد الاستثمار
+                </button>
+                <button type="button" class="btn btn-outline" onclick="closeModal()" style="margin-top: 10px;">
+                    <i class="fas fa-times"></i>
+                    إلغاء
+                </button>
+            </div>
+        </div>
+
+        <!-- Success Modal -->
+        <div class="modal" id="successModal">
+            <div class="modal-content">
+                <div class="modal-icon" style="color: #4CAF50;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 style="color: #4CAF50; margin-bottom: 15px;" id="successTitle">تمت العملية بنجاح!</h3>
+                <p style="color: #666; margin-bottom: 20px; line-height: 1.6;" id="successMessage">تم تنفيذ العملية بنجاح</p>
+                <button type="button" class="btn" onclick="closeModal()">
+                    <i class="fas fa-check"></i>
+                    موافق
+                </button>
+            </div>
+        </div>
+
+        <!-- User Details Modal -->
+        <div class="modal" id="userDetailsModal">
+            <div class="modal-content">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-user"></i>
+                    تفاصيل المستخدم
+                </h3>
+                <div id="userDetailsContent">
+                    <!-- User details will be loaded here -->
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="btn" onclick="approveUser()">
+                        <i class="fas fa-check"></i>
+                        موافقة
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="rejectUser()">
+                        <i class="fas fa-times"></i>
+                        رفض
+                    </button>
+                </div>
+                <button type="button" class="btn btn-outline" onclick="closeModal()" style="margin-top: 10px;">
+                    <i class="fas fa-arrow-right"></i>
+                    إغلاق
+                </button>
+            </div>
+        </div>
+
+        <!-- Project Details Modal -->
+        <div class="modal" id="projectDetailsModal">
+            <div class="modal-content">
+                <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-project-diagram"></i>
+                    تفاصيل المشروع
+                </h3>
+                <div id="projectDetailsContent">
+                    <!-- Project details will be loaded here -->
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="btn" onclick="approveProject()">
+                        <i class="fas fa-check"></i>
+                        موافقة
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="rejectProject()">
+                        <i class="fas fa-times"></i>
+                        رفض
+                    </button>
+                </div>
+                <button type="button" class="btn btn-outline" onclick="closeModal()" style="margin-top: 10px;">
+                    <i class="fas fa-arrow-right"></i>
+                    إغلاق
+                </button>
+            </div>
+        </div>
+
+        <!-- Payment Processing Modal -->
+        <div class="modal" id="paymentModal">
+            <div class="modal-content">
+                <div class="modal-icon" style="color: #FFA000;">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <h3 style="color: #FFA000; margin-bottom: 15px;" id="paymentTitle">جاري معالجة الدفع</h3>
+                <p style="color: #666; margin-bottom: 20px; line-height: 1.6;" id="paymentMessage">يرجى انتظار تأكيد العملية...</p>
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #FFA000;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشاركة - منصة التمويل الجماعي المتقدمة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome/Landing Screen -->
+        <div class="screen active" id="welcome">
+            <div class="welcome-screen">
+                <div class="welcome-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h1 class="welcome-title">مرحباً بك في مشاركة</h1>
+                <p class="welcome-subtitle">منصة التمويل الجماعي الرائدة للمشاريع الصغيرة والمتوسطة في الوطن العربي</p>
+                
+                <div class="card">
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="feature-text">
+                                <div class="feature-title">آمن ومضمون</div>
+                                <div class="feature-description">عقود إلكترونية موثقة وشفافية كاملة</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="feature-text">
+                                <div class="feature-title">عوائد مجزية</div>
+                                <div class="feature-description">استثمارات مدروسة بعوائد تنافسية</div>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="feature-text">
+                                <div class="feature-title">مجتمع المستثمرين</div>
+                                <div class="feature-description">انضم لآلاف المستثمرين الناجحين</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <button class="btn" onclick="showScreen('register')">
+                    <i class="fas fa-rocket"></i>
+                    إنشاء حساب جديد
+                </button>
+                <button class="btn btn-outline" onclick="showScreen('login')" style="margin-top: 15px;">
+                    <i class="fas fa-sign-in-alt"></i>
+                    تسجيل الدخول
+                </button>
+                <button class="btn btn-secondary" onclick="showPublicProjects()" style="margin-top: 15px;">
+                    <i class="fas fa-eye"></i>
+                    تصفح المشاريع أولاً
+                </button>
+            </div>
+        </div>
+
+        <!-- Login Screen -->
+        <div class="screen" id="login">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-sign-in-alt"></i>
+                    تسجيل الدخول
+                </div>
+                <div class="tagline">أهلاً بك مرة أخرى في مشاركة</div>
+            </div>
+            
+            <div id="loginAlert"></div>
+            
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        البريد الإلكتروني
+                    </label>
+                    <input type="email" class="form-input with-icon" id="loginEmail" placeholder="example@email.com" required>
+                    <i class="fas fa-envelope input-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i>
+                        كلمة المرور
+                    </label>
+                    <input type="password" class="form-input with-icon" id="loginPassword" placeholder="كلمة المرور" required>
+                    <i class="fas fa-lock input-icon"></i>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    تسجيل الدخول
+                </button>
+                <button type="button" class="btn btn-outline" onclick="showScreen('register')" style="margin-top: 15px;">
+                    <i class="fas fa-user-plus"></i>
+                    إنشاء حساب جديد
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="showScreen('welcome')" style="margin-top: 15px;">
+                    <i class="fas fa-arrow-right"></i>
+                    العودة للرئيسية
+                </button>
+            </form>
+        </div>
+
+        <!-- Registration Screen -->
+        <div class="screen" id="register">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-user-plus"></i>
+                    إنشاء حساب جديد
+                </div>
+                <div class="tagline">انضم لمجتمع مشاركة</div>
+            </div>
+            
+            <div id="registerAlert"></div>
+            
+            <form onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label class="form-label">نوع الحساب</label>
+                    <div class="user-type-selector">
+                        <div class="user-type-option" onclick="selectUserType('investor')" id="investorType">
+                            <div class="user-type-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="user-type-title">مستثمر</div>
+                            <div class="user-type-desc">أستثمر في المشاريع</div>
+                        </div>
+                        <div class="user-type-option" onclick="selectUserType('owner')" id="ownerType">
+                            <div class="user-type-icon">
+                                <i class="fas fa-briefcase"></i>
+                            </div>
+                            <div class="user-type-title">صاحب مشروع</div>
+                            <div class="user-type-desc">أطلب تمويل لمشروعي</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            الاسم الأول
+                        </label>
+                        <input type="text" class="form-input with-icon" id="firstName" placeholder="الاسم الأول" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            الاسم الأخير
+                        </label>
+                        <input type="text" class="form-input with-icon" id="lastName" placeholder="الاسم الأخير" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        البريد الإلكتروني
+                    </label>
+                    <input type="email" class="form-input with-icon" id="registerEmail" placeholder="example@email.com" required>
+                    <i class="fas fa-envelope input-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-phone"></i>
+                        رقم الهاتف
+                    </label>
+                    <input type="tel" class="form-input with-icon" id="phone" placeholder="01xxxxxxxxx" required>
+                    <i class="fas fa-phone input-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i>
+                        كلمة المرور
+                    </label>
+                    <input type="password" class="form-input with-icon" id="registerPassword" placeholder="كلمة مرور قوية" required>
+                    <i class="fas fa-lock input-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-id-card"></i>
+                        الرقم القومي
+                    </label>
+                    <input type="text" class="form-input with-icon" id="nationalId" placeholder="رقمك القومي للتوثيق" required>
+                    <i class="fas fa-id-card input-icon"></i>
+                </div>
+                
+                <!-- Fields for Project Owners -->
+                <div id="ownerFields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-building"></i>
+                            نوع النشاط التجاري
+                        </label>
+                        <select class="form-select with-icon" id="businessType">
+                            <option value="">اختر نوع النشاط</option>
+                            <option value="restaurant">مطعم</option>
+                            <option value="store">متجر</option>
+                            <option value="cafe">مقهى</option>
+                            <option value="technology">تقنية</option>
+                            <option value="agriculture">زراعة</option>
+                            <option value="manufacturing">تصنيع</option>
+                            <option value="services">خدمات</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                        <i class="fas fa-building input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-map-marker-alt"></i>
+                            المحافظة
+                        </label>
+                        <select class="form-select with-icon" id="governorate">
+                            <option value="">اختر المحافظة</option>
+                            <option value="cairo">القاهرة</option>
+                            <option value="giza">الجيزة</option>
+                            <option value="alexandria">الإسكندرية</option>
+                            <option value="qalyubia">القليوبية</option>
+                            <option value="dakahlia">الدقهلية</option>
+                            <option value="sharqia">الشرقية</option>
+                            <option value="gharbia">الغربية</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                        <i class="fas fa-map-marker-alt input-icon"></i>
+                    </div>
+                </div>
+                
+                <!-- Fields for Investors -->
+                <div id="investorFields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-graduation-cap"></i>
+                            المستوى التعليمي
+                        </label>
+                        <select class="form-select with-icon" id="education">
+                            <option value="">اختر المستوى التعليمي</option>
+                            <option value="high_school">ثانوية عامة</option>
+                            <option value="diploma">دبلوم</option>
+                            <option value="bachelor">بكالوريوس</option>
+                            <option value="master">ماجستير</option>
+                            <option value="phd">دكتوراه</option>
+                        </select>
+                        <i class="fas fa-graduation-cap input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-money-bill-wave"></i>
+                            الدخل الشهري التقريبي
+                        </label>
+                        <select class="form-select with-icon" id="income">
+                            <option value="">اختر الدخل الشهري</option>
+                            <option value="less_than_3000">أقل من 3,000 جنيه</option>
+                            <option value="3000_to_5000">3,000 - 5,000 جنيه</option>
+                            <option value="5000_to_10000">5,000 - 10,000 جنيه</option>
+                            <option value="10000_to_20000">10,000 - 20,000 جنيه</option>
+                            <option value="more_than_20000">أكثر من 20,000 جنيه</option>
+                        </select>
+                        <i class="fas fa-money-bill-wave input-icon"></i>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-check-circle"></i>
+                    إنشاء الحساب
+                </button>
+                <button type="button" class="btn btn-outline" onclick="showScreen('login')" style="margin-top: 15px;">
+                    <i class="fas fa-sign-in-alt"></i>
+                    لديك حساب بالفعل؟
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="showScreen('welcome')" style="margin-top: 15px;">
+                    <i class="fas fa-arrow-right"></i>
+                    العودة للرئيسية
+                </button>
+            </form>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div class="screen" id="adminDashboard">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    لوحة تحكم الإدارة
+                </div>
+                <div class="tagline">إدارة المستخدمين والمشاريع</div>
+            </div>
+            
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingUsersCount">0</div>
+                    <div class="stat-label">مستخدمين في الانتظار</div>
+                </div>
+                <div class="stat-card secondary">
+                    <div class="stat-number" id="pendingProjectsCount">0</div>
+                    <div class="stat-label">مشاريع في الانتظار</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-number" id="approvedUsersCount">0</div>
+                    <div class="stat-label">مستخدمين موثقين</div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-number" id="rejectedCount">0</div>
+                    <div class="stat-label">طلبات مرفوضة</div>
+                </div>
+            </div>
+            
             <div class="card">
                 <h3 style="color: #00796B; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
                     <i class="fas fa-users"></i>
