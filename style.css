@@ -56,7 +56,7 @@
 
 body {
     font-family: 'Cairo', sans-serif;
-    background: linear-gradient(135deg, var(--light-white) 0%, var(--medium-gray) 100%);
+  background: linear-gradient(135deg, var(--light-gray) 0%, var(--medium-gray) 100%);
     color: var(--text-white
 
 );
